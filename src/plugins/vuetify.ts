@@ -5,38 +5,38 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles/main.css'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles/main.css";
 
-import colors from 'vuetify/util/colors'
-import { fa, en, vi, zhHans, zhHant, ru } from 'vuetify/locale'
+import colors from "vuetify/util/colors";
+import { fa, en, vi, zhHans, zhHant, ru } from "vuetify/locale";
 
 // Composables
-import { createVuetify } from 'vuetify'
+import { createVuetify } from "vuetify";
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   defaults: {
-    VRow: { density: 'compact' },
+    VRow: { density: "compact" },
     VTextField: {
-      variant: 'solo-filled',
+      variant: "solo-filled",
     },
     VSelect: {
-      variant: 'solo-filled',
+      variant: "solo-filled",
     },
     VCombobox: {
-      variant: 'solo-filled',
+      variant: "solo-filled",
     },
     VTextarea: {
-      variant: 'solo-filled',
+      variant: "solo-filled",
     },
   },
   theme: {
-    defaultTheme: localStorage.getItem('theme') ?? 'system',
+    defaultTheme: localStorage.getItem("theme") ?? "system",
     themes: {
       light: {
         colors: {
-          error: '#FF5252',
+          error: "#FF5252",
           background: colors.grey.lighten4,
         },
       },
@@ -49,8 +49,8 @@ export default createVuetify({
     },
   },
   locale: {
-    locale: localStorage.getItem("locale") ?? 'en',
-    fallback: 'en',
+    locale: localStorage.getItem("locale") ?? "en",
+    fallback: "en",
     messages: { en, fa, vi, zhHans, zhHant, ru },
   },
-})
+});

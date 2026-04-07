@@ -1,30 +1,30 @@
-import RandomUtil from "@/plugins/randomUtil"
+import RandomUtil from "@/plugins/randomUtil";
 
 export interface Link {
-  type: "local" | "external" | "sub"
-  remark?: string
-  uri: string
+  type: "local" | "external" | "sub";
+  remark?: string;
+  uri: string;
 }
 
 export interface Client {
-  id?: number
-	enable: boolean
-	name: string
-	config?: Config
-	inbounds: number[]
-  links?: Link[]
-	volume: number
-	expiry: number
-  up: number
-  down: number
-  desc: string
-  group: string
-  delayStart?: boolean
-  autoReset?: boolean
-  resetDays?: number
-  nextReset?: number
-  totalUp?: number
-  totalDown?: number
+  id?: number;
+  enable: boolean;
+  name: string;
+  config?: Config;
+  inbounds: number[];
+  links?: Link[];
+  volume: number;
+  expiry: number;
+  up: number;
+  down: number;
+  desc: string;
+  group: string;
+  delayStart?: boolean;
+  autoReset?: boolean;
+  resetDays?: number;
+  nextReset?: number;
+  totalUp?: number;
+  totalDown?: number;
 }
 
 const defaultClient: Client = {
@@ -45,33 +45,33 @@ const defaultClient: Client = {
   nextReset: 0,
   totalUp: 0,
   totalDown: 0,
-}
+};
 
 type Config = {
   [key: string]: {
-    name?: string
-    username?: string
-    [key: string]: any
-  }
-}
+    name?: string;
+    username?: string;
+    [key: string]: any;
+  };
+};
 
 export function updateConfigs(configs: Config, newUserName: string): Config {
   for (const key in configs) {
     if (configs.hasOwnProperty(key)) {
-      const config = configs[key]
+      const config = configs[key];
       if (config.hasOwnProperty("name")) {
-        config.name = newUserName
+        config.name = newUserName;
       } else if (config.hasOwnProperty("username")) {
-        config.username = newUserName
+        config.username = newUserName;
       }
     }
   }
-  return configs
+  return configs;
 }
 
 export function shuffleConfigs(configs: Config, key?: string) {
-  const keys = key ? [key] : Object.keys(configs)
-  keys.forEach(k => {
+  const keys = key ? [key] : Object.keys(configs);
+  keys.forEach((k) => {
     switch (k) {
       case "mixed":
       case "socks":
@@ -80,37 +80,37 @@ export function shuffleConfigs(configs: Config, key?: string) {
       case "trojan":
       case "naive":
       case "hysteria2":
-        configs[k].password = RandomUtil.randomSeq(10)
-        break
+        configs[k].password = RandomUtil.randomSeq(10);
+        break;
       case "shadowsocks":
-        configs[k].password = RandomUtil.randomShadowsocksPassword(32)
-        break
+        configs[k].password = RandomUtil.randomShadowsocksPassword(32);
+        break;
       case "shadowsocks16":
-        configs[k].password = RandomUtil.randomShadowsocksPassword(16)
-        break
+        configs[k].password = RandomUtil.randomShadowsocksPassword(16);
+        break;
       case "shadowtls":
-        configs[k].password = RandomUtil.randomShadowsocksPassword(32)
-        break
+        configs[k].password = RandomUtil.randomShadowsocksPassword(32);
+        break;
       case "hysteria":
-        configs[k].auth_str = RandomUtil.randomSeq(10)
-        break
+        configs[k].auth_str = RandomUtil.randomSeq(10);
+        break;
       case "tuic":
-        configs[k].password = RandomUtil.randomSeq(10)
-        configs[k].uuid = RandomUtil.randomUUID()
-        break
+        configs[k].password = RandomUtil.randomSeq(10);
+        configs[k].uuid = RandomUtil.randomUUID();
+        break;
       case "vmess":
       case "vless":
-        configs[k].uuid = RandomUtil.randomUUID()
-        break
+        configs[k].uuid = RandomUtil.randomUUID();
+        break;
     }
-  })
+  });
 }
 
 export function randomConfigs(user: string): Config {
-  const mixedPassword = RandomUtil.randomSeq(10)
-  const ssPassword16 = RandomUtil.randomShadowsocksPassword(16)
-  const ssPassword32 = RandomUtil.randomShadowsocksPassword(32)
-  const uuid = RandomUtil.randomUUID()
+  const mixedPassword = RandomUtil.randomSeq(10);
+  const ssPassword16 = RandomUtil.randomShadowsocksPassword(16);
+  const ssPassword32 = RandomUtil.randomShadowsocksPassword(32);
+  const uuid = RandomUtil.randomUUID();
   return {
     mixed: {
       username: user,
@@ -171,15 +171,15 @@ export function randomConfigs(user: string): Config {
       name: user,
       password: mixedPassword,
     },
-  }
+  };
 }
 
 export function createClient<T extends Client>(json?: Partial<T>): Client {
-  defaultClient.name = RandomUtil.randomSeq(8)
-  const defaultObject: Client = { ...defaultClient, ...(json || {}) }
+  defaultClient.name = RandomUtil.randomSeq(8);
+  const defaultObject: Client = { ...defaultClient, ...(json || {}) };
 
   // Add missing config
-  defaultObject.config = { ...randomConfigs(defaultObject.name), ...defaultObject.config }
-  
-  return defaultObject
+  defaultObject.config = { ...randomConfigs(defaultObject.name), ...defaultObject.config };
+
+  return defaultObject;
 }

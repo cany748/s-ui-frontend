@@ -2,11 +2,11 @@
   <v-dialog transition="dialog-bottom-transition" width="800">
     <v-card class="rounded-lg">
       <v-card-title>
-        {{ $t('actions.editbulk') }}
+        {{ $t("actions.editbulk") }}
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
-        <v-container style="padding: 0;">
+      <v-card-text style="padding: 0 16px; overflow-y: scroll">
+        <v-container style="padding: 0">
           <v-card :subtitle="$t('actions.action')" class="mb-4">
             <v-card-text>
               <v-row>
@@ -40,12 +40,7 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-switch
-                    v-model="editData.enable"
-                    :label="$t('enable')"
-                    color="primary"
-                    hide-details
-                  ></v-switch>
+                  <v-switch v-model="editData.enable" :label="$t('enable')" color="primary" hide-details></v-switch>
                 </v-col>
               </v-row>
               <v-row v-if="actionMode === 'add_inbounds' || actionMode === 'remove_inbounds'">
@@ -69,21 +64,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          variant="outlined"
-          @click="closeModal"
-        >
-          {{ $t('actions.close') }}
+        <v-btn color="primary" variant="outlined" @click="closeModal">
+          {{ $t("actions.close") }}
         </v-btn>
-        <v-btn
-          color="primary"
-          variant="tonal"
-          :loading="loading"
-          :disabled="selectedClients.values.length == 0"
-          @click="saveChanges"
-        >
-          {{ $t('actions.save') }}
+        <v-btn color="primary" variant="tonal" :loading="loading" :disabled="selectedClients.values.length == 0" @click="saveChanges">
+          {{ $t("actions.save") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -91,24 +76,24 @@
 </template>
 
 <script lang="ts">
-import Users from '@/components/Users.vue'
-import { i18n } from '@/locales'
-import Data from '@/store/modules/data';
-import { Client } from '@/types/clients';
+import Users from "@/components/Users.vue";
+import { i18n } from "@/locales";
+import Data from "@/store/modules/data";
+import { Client } from "@/types/clients";
 
 export default {
-  props: ['visible', 'clients', 'inboundTags'],
-  emits: ['close'],
+  props: ["visible", "clients", "inboundTags"],
+  emits: ["close"],
   components: { Users },
   data() {
     return {
       loading: false,
-      actionMode: 'change_limits',
+      actionMode: "change_limits",
       actionModes: [
-        { title: i18n.global.t('bulk.changeLimits'), value: 'change_limits' },
-        { title: i18n.global.t('bulk.addInbounds'), value: 'add_inbounds' },
-        { title: i18n.global.t('bulk.removeInbounds'), value: 'remove_inbounds' },
-        { title: i18n.global.t('actions.delbulk'), value: 'delete_bulk' },
+        { title: i18n.global.t("bulk.changeLimits"), value: "change_limits" },
+        { title: i18n.global.t("bulk.addInbounds"), value: "add_inbounds" },
+        { title: i18n.global.t("bulk.removeInbounds"), value: "remove_inbounds" },
+        { title: i18n.global.t("actions.delbulk"), value: "delete_bulk" },
       ],
       editData: {
         enable: true,
@@ -117,80 +102,81 @@ export default {
         inboundTags: [] as number[],
       },
       selectedClients: {
-        model: 'none',
+        model: "none",
         values: [] as any[],
       },
-    }
+    };
   },
   methods: {
     onActionChange() {
-      this.editData.inboundTags = []
+      this.editData.inboundTags = [];
     },
     closeModal() {
-      this.$emit('close')
+      this.$emit("close");
     },
     getTargetClients(): Client[] {
-      const clients = this.clients ?? []
+      const clients = this.clients ?? [];
       switch (this.selectedClients.model) {
-        case 'all':
-          return clients
-        case 'group':
-          return clients
-            .filter((c: any) => this.selectedClients.values.includes(c.group))
-        case 'client':
-          return clients.filter((c: any) => this.selectedClients.values.includes(c.id))
+        case "all":
+          return clients;
+        case "group":
+          return clients.filter((c: any) => this.selectedClients.values.includes(c.group));
+        case "client":
+          return clients.filter((c: any) => this.selectedClients.values.includes(c.id));
         default:
-          return []
+          return [];
       }
     },
     async saveChanges() {
-      this.loading = true
-      const targetClients = this.getTargetClients()
+      this.loading = true;
+      const targetClients = this.getTargetClients();
       switch (this.actionMode) {
-        case 'change_limits':
+        case "change_limits":
           targetClients.forEach((c: Client) => {
-            if (this.editData.addVolume != 0 && c.volume > 0)
-              c.volume += this.editData.addVolume*(1024 ** 3)
-            if (this.editData.addDays != 0 && c.expiry > 0)
-              c.expiry += this.editData.addDays*(24 * 60 * 60)
+            if (this.editData.addVolume != 0 && c.volume > 0) c.volume += this.editData.addVolume * 1024 ** 3;
+            if (this.editData.addDays != 0 && c.expiry > 0) c.expiry += this.editData.addDays * (24 * 60 * 60);
             if (this.editData.enable)
-              c.enable = (c.volume == 0 || c.up + c.down < c.volume) && (c.expiry == 0 || c.expiry > Date.now()/1000)
-          })
-          break
-        case 'add_inbounds':
+              c.enable = (c.volume == 0 || c.up + c.down < c.volume) && (c.expiry == 0 || c.expiry > Date.now() / 1000);
+          });
+          break;
+        case "add_inbounds":
           targetClients.forEach((c: Client) => {
             this.editData.inboundTags.forEach((t: number) => {
               if (!c.inbounds.includes(t)) {
-                c.inbounds.push(t)
+                c.inbounds.push(t);
               }
-            })
-            c.inbounds = c.inbounds.sort()
-          })
-          break
-        case 'remove_inbounds':
+            });
+            c.inbounds = c.inbounds.sort();
+          });
+          break;
+        case "remove_inbounds":
           targetClients.forEach((c: Client) => {
-            c.inbounds = c.inbounds.filter((i: number) => !this.editData.inboundTags.includes(i))
-          })
-          break
-        case 'delete_bulk':
-          const success = await Data().save("clients", "delbulk", targetClients.map((c: Client) => c.id))
-          if (success) this.closeModal()
-          this.loading = false
-          return
+            c.inbounds = c.inbounds.filter((i: number) => !this.editData.inboundTags.includes(i));
+          });
+          break;
+        case "delete_bulk":
+          const success = await Data().save(
+            "clients",
+            "delbulk",
+            targetClients.map((c: Client) => c.id),
+          );
+          if (success) this.closeModal();
+          this.loading = false;
+          return;
       }
-      const success = await Data().save("clients", 'editbulk', targetClients)
-      if (success) this.closeModal()
-      this.loading = false
+      const success = await Data().save("clients", "editbulk", targetClients);
+      if (success) this.closeModal();
+      this.loading = false;
     },
   },
   watch: {
     visible(newVal) {
       if (newVal) {
-        this.actionMode = 'change_limits'
-        this.editData = { enable: true, addDays: 0, addVolume: 0, inboundTags: [] }
-        this.selectedClients = { model: 'none', values: [] }
+        this.actionMode = "change_limits";
+        this.editData = { enable: true, addDays: 0, addVolume: 0, inboundTags: [] };
+        this.selectedClients = { model: "none", values: [] };
       }
     },
   },
-}
+};
 </script>

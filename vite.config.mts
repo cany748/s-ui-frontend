@@ -1,22 +1,22 @@
 // Plugins
-import vue from '@vitejs/plugin-vue'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import vue from "@vitejs/plugin-vue";
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 // Utilities
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
-import { randomBytes } from 'crypto'
+import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "node:url";
+import { randomBytes } from "crypto";
 
 function getUniqueFileName(template) {
-  if (template.includes('.js') || template.includes('.css')) {
-    const hash = randomBytes(8).toString('hex')
-    return template.replace('[name]', hash)
+  if (template.includes(".js") || template.includes(".css")) {
+    const hash = randomBytes(8).toString("hex");
+    return template.replace("[name]", hash);
   }
-  return template
+  return template;
 }
 
 export default defineConfig({
-  base: '',
+  base: "",
   plugins: [
     vue({
       template: { transformAssetUrls },
@@ -24,41 +24,40 @@ export default defineConfig({
     vuetify({
       autoImport: true,
       styles: {
-        configFile: 'src/styles/settings.scss',
+        configFile: "src/styles/settings.scss",
       },
-    })
+    }),
   ],
   build: {
     manifest: false,
-    outDir: 'dist',
+    outDir: "dist",
     chunkSizeWarningLimit: 2000,
     rollupOptions: {
       output: {
         codeSplitting: false,
-        entryFileNames: getUniqueFileName('assets/[name].js'),
-        chunkFileNames: getUniqueFileName('assets/[name].js'),
+        entryFileNames: getUniqueFileName("assets/[name].js"),
+        chunkFileNames: getUniqueFileName("assets/[name].js"),
         assetFileNames: (assetInfo) => {
-          if (assetInfo.names.some(name => name.endsWith('.css')))
-            return getUniqueFileName('assets/[name].css')
-          return 'assets/' + assetInfo.names[0]
+          if (assetInfo.names.some((name) => name.endsWith(".css"))) return getUniqueFileName("assets/[name].css");
+          return "assets/" + assetInfo.names[0];
         },
       },
-    }
+    },
   },
-  define: { 'process.env': {} },
+  define: { "process.env": {} },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
-    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
+    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
     port: 3000,
     proxy: {
-      '/app/api': {
-        target: 'http://localhost:2095',
+      "/app/api": {
+        target: "http://localhost:2095",
         changeOrigin: true,
       },
     },
-  }
-})
+  },
+});

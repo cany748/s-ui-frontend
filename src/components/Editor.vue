@@ -5,7 +5,7 @@
         {{ title }}
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text style="padding: 0 16px; overflow-y: scroll">
         <div class="code-editor">
           <div class="line-numbers">
             <span v-for="n in lineCount" :key="n">{{ n }}</span>
@@ -25,19 +25,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          variant="outlined"
-          @click="closeModal"
-        >
-          {{ $t('actions.close') }}
+        <v-btn color="primary" variant="outlined" @click="closeModal">
+          {{ $t("actions.close") }}
         </v-btn>
-        <v-btn
-          color="primary"
-          variant="tonal"
-          @click="saveChanges"
-        >
-          {{ $t('actions.save') }}
+        <v-btn color="primary" variant="tonal" @click="saveChanges">
+          {{ $t("actions.save") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -45,45 +37,45 @@
 </template>
 
 <script lang="ts">
-import { useTheme } from 'vuetify'
+import { useTheme } from "vuetify";
 
 export default {
-  props: ['visible', 'data', 'title'],
-  emits: ['close', 'save'],
+  props: ["visible", "data", "title"],
+  emits: ["close", "save"],
   data() {
     return {
       content: this.$props.data,
-      theme: useTheme()
-    }
+      theme: useTheme(),
+    };
   },
   computed: {
     lineCount() {
-      return this.content?.split('\n').length
-    }
+      return this.content?.split("\n").length;
+    },
   },
   methods: {
     syncScroll() {
-      const textarea = document.querySelector('textarea')
-      const lineNumbers = textarea?.parentElement?.parentElement?.querySelector('.line-numbers')
+      const textarea = document.querySelector("textarea");
+      const lineNumbers = textarea?.parentElement?.parentElement?.querySelector(".line-numbers");
       if (lineNumbers && textarea) {
-        lineNumbers.scrollTop = textarea.scrollTop
+        lineNumbers.scrollTop = textarea.scrollTop;
       }
     },
     closeModal() {
-      this.$emit('close')
+      this.$emit("close");
     },
     saveChanges() {
-      this.$emit('save', this.content)
-    }
+      this.$emit("save", this.content);
+    },
   },
   watch: {
     visible(v) {
       if (v) {
-        this.content = this.$props.data
+        this.content = this.$props.data;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

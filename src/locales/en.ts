@@ -79,7 +79,7 @@ export default {
       startupTime: "Startup time",
       threads: "Threads",
       memory: "Memory",
-      running: "Running"
+      running: "Running",
     },
     backup: {
       title: "Backup & Restore",
@@ -290,7 +290,7 @@ export default {
       testUrl: "Test URL",
       interval: "Interval",
       tolerance: "Tolerance",
-      urlTestOptions: "URLTest Options"
+      urlTestOptions: "URLTest Options",
     },
     ts: {
       options: "Tailscale Options",
@@ -449,7 +449,8 @@ export default {
       rulesTitle: "Importing rules",
       urlsHint: "One URL per line. The tag is determined from the file name without the extension.",
       fileHint: "Upload it .a txt file with URLs, one per line.",
-      jsonHint: "Insert a JSON object with the rules and/or rule_set arrays. You can insert the entire \"route\" block: {'{'}...{'}'} or just its contents.",
+      jsonHint:
+        "Insert a JSON object with the rules and/or rule_set arrays. You can insert the entire \"route\" block: {'{'}...{'}'} or just its contents.",
       fileJsonHint: "Upload it .a json file with the route block.",
       urlHint: "Specify a direct link to the JSON file (for example, a raw GitHub link).",
       preview: "Preview",
@@ -524,7 +525,7 @@ export default {
         ns: "Nameservers",
         extra: "Extra",
       },
-    }
+    },
   },
   basic: {
     log: {
@@ -634,4 +635,4 @@ export default {
     s: "s",
     ms: "ms",
   },
-}
+};

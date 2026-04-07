@@ -15,28 +15,29 @@
 </template>
 
 <script lang="ts">
-import { i18n } from '@/locales'
-
+import { i18n } from "@/locales";
 
 export default {
-  props: ['data', 'clients'],
+  props: ["data", "clients"],
   data() {
     return {
       initUsersModels: [
-        { title: i18n.global.t('none'), value: 'none' },
-        { title: i18n.global.t('all'), value: 'all' },
-        { title: i18n.global.t('client.group'), value: 'group' },
-        { title: i18n.global.t('pages.clients'), value: 'client' },
+        { title: i18n.global.t("none"), value: "none" },
+        { title: i18n.global.t("all"), value: "all" },
+        { title: i18n.global.t("client.group"), value: "group" },
+        { title: i18n.global.t("pages.clients"), value: "client" },
       ],
-    }
+    };
   },
   computed: {
     clientNames() {
-      return this.$props.clients.map((c:any) => { return { title: c.name, value: c.id } } )
+      return this.$props.clients.map((c: any) => {
+        return { title: c.name, value: c.id };
+      });
     },
     groupNames() {
-      return Array.from(new Set(this.$props.clients.map((c:any) => c.group)))
+      return Array.from(new Set(this.$props.clients.map((c: any) => c.group)));
     },
-  }
-}
+  },
+};
 </script>

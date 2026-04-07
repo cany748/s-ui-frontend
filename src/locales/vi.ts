@@ -79,7 +79,7 @@ export default {
       startupTime: "Thời gian khởi động",
       threads: "Luồng",
       memory: "Bộ nhớ",
-      running: "Đang chạy"
+      running: "Đang chạy",
     },
     backup: {
       title: "Sao lưu và khôi phục",
@@ -163,7 +163,7 @@ export default {
     api: {
       title: "Mã thông báo API",
       msg: "Vui lòng sao chép mã thông báo bên dưới và lưu trữ nó ở nơi an toàn. Nó sẽ không được hiển thị lại.",
-      token: "Mã thông báo"
+      token: "Mã thông báo",
     },
   },
   setting: {
@@ -345,7 +345,7 @@ export default {
     anytls: {
       idleInterval: "Khoảng kiểm tra phiên nhàn rỗi",
       idleTimeout: "Thời gian chờ phiên nhàn rỗi",
-      minIdle: "Số phiên nhàn rỗi tối thiểu"
+      minIdle: "Số phiên nhàn rỗi tối thiểu",
     },
   },
   in: {
@@ -449,7 +449,8 @@ export default {
       rulesTitle: "Nhập quy tắc",
       urlsHint: "Một URL mỗi dòng. Thẻ được lấy từ tên tệp (không gồm phần mở rộng).",
       fileHint: "Tải lên tệp .txt chứa URL, mỗi dòng một URL.",
-      jsonHint: "Dán đối tượng JSON có mảng rules và/hoặc rule_set. Có thể dán cả khối \"route\": {'{'}...{'}'} hoặc chỉ nội dung bên trong.",
+      jsonHint:
+        "Dán đối tượng JSON có mảng rules và/hoặc rule_set. Có thể dán cả khối \"route\": {'{'}...{'}'} hoặc chỉ nội dung bên trong.",
       fileJsonHint: "Tải lên tệp .json có khối route.",
       urlHint: "Nhập liên kết trực tiếp tới tệp JSON (ví dụ liên kết raw GitHub).",
       preview: "Xem trước",
@@ -516,13 +517,13 @@ export default {
           servFail: "Lỗi máy chủ",
           nxDomain: "Không tìm thấy",
           refused: "Bị từ chối",
-          notImp: "Chưa được hỗ trợ"
+          notImp: "Chưa được hỗ trợ",
         },
         answer: "Câu trả lời",
         ns: "Máy chủ tên",
-        extra: "Bổ sung"
-      }
-    }
+        extra: "Bổ sung",
+      },
+    },
   },
   basic: {
     log: {
@@ -551,7 +552,7 @@ export default {
       allowPrivate: "Cho phép mạng riêng",
     },
   },
-  tls : {
+  tls: {
     enable: "Kích hoạt TLS",
     usePath: "Sử dụng đường dẫn",
     useText: "Sử dụng văn bản",
@@ -632,4 +633,4 @@ export default {
     s: "s",
     ms: "ms",
   },
-}
+};

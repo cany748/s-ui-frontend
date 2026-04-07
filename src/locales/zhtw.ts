@@ -79,7 +79,7 @@ export default {
       startupTime: "啟動時間",
       threads: "線程",
       memory: "內存",
-      running: "運行狀態"
+      running: "運行狀態",
     },
     backup: {
       title: "備份與恢復",
@@ -290,7 +290,7 @@ export default {
       testUrl: "測試 URL",
       interval: "間隔",
       tolerance: "容忍度",
-      urlTestOptions: "URLTest 選項"
+      urlTestOptions: "URLTest 選項",
     },
     ts: {
       options: "Tailscale 選項",
@@ -345,7 +345,7 @@ export default {
     anytls: {
       idleInterval: "閒置會話檢查間隔",
       idleTimeout: "閒置會話逾時",
-      minIdle: "最小閒置會話數"
+      minIdle: "最小閒置會話數",
     },
   },
   in: {
@@ -516,12 +516,12 @@ export default {
           servFail: "伺服器故障",
           nxDomain: "未找到",
           refused: "被拒絕",
-          notImp: "尚未實作"
+          notImp: "尚未實作",
         },
         answer: "回應",
         ns: "名稱伺服器",
-        extra: "額外資訊"
-      }
+        extra: "額外資訊",
+      },
     },
   },
   basic: {
@@ -551,7 +551,7 @@ export default {
       allowPrivate: "允許私人網路",
     },
   },
-  tls : {
+  tls: {
     enable: "啟用 TLS",
     usePath: "使用外部路徑",
     useText: "使用文件內容",
@@ -632,4 +632,4 @@ export default {
     s: "秒",
     ms: "毫秒",
   },
-}
+};

@@ -1,5 +1,5 @@
 <template>
-  <v-app style="overflow: auto;">
+  <v-app style="overflow: auto">
     <drawer :isMobile="isMobile" :displayDrawer="displayDrawer" @toggleDrawer="toggleDrawer" />
     <default-bar :isMobile="isMobile" @toggleDrawer="toggleDrawer" />
     <default-view />
@@ -7,23 +7,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import DefaultBar from './AppBar.vue'
-import Drawer from './Drawer.vue'
-import DefaultView from './View.vue'
-import { useDisplay } from 'vuetify'
+import { computed, ref } from "vue";
+import DefaultBar from "./AppBar.vue";
+import Drawer from "./Drawer.vue";
+import DefaultView from "./View.vue";
+import { useDisplay } from "vuetify";
 
-const { smAndDown } = useDisplay()
-const displayDrawer = ref(false)
+const { smAndDown } = useDisplay();
+const displayDrawer = ref(false);
 
 const toggleDrawer = () => {
-  displayDrawer.value = !displayDrawer.value
-}
+  displayDrawer.value = !displayDrawer.value;
+};
 
-const isMobile = computed( ():boolean =>{
-  displayDrawer.value = !smAndDown.value
-  return smAndDown.value
-})
+const isMobile = computed((): boolean => {
+  displayDrawer.value = !smAndDown.value;
+  return smAndDown.value;
+});
 </script>
 
 <style>
@@ -33,6 +33,6 @@ const isMobile = computed( ():boolean =>{
   min-height: 20px;
 }
 .v-switch.v-input {
-  padding-inline-start: .6rem;
+  padding-inline-start: 0.6rem;
 }
 </style>

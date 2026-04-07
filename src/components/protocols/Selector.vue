@@ -13,13 +13,7 @@
         ></v-combobox>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-combobox
-          v-model="data.default"
-          :items="data.outbounds"
-          :label="$t('types.lb.defaultOut')"
-          clearable
-          hide-details
-        ></v-combobox>
+        <v-combobox v-model="data.default" :items="data.outbounds" :label="$t('types.lb.defaultOut')" clearable hide-details></v-combobox>
       </v-col>
       <v-col cols="12" sm="6">
         <v-switch v-model="data.interrupt_exist_connections" color="primary" :label="$t('types.lb.interruptConn')" hide-details></v-switch>
@@ -29,18 +23,17 @@
 </template>
 
 <script lang="ts">
-
 export default {
-  props: ['data','tags'],
+  props: ["data", "tags"],
   data() {
-    return {}
+    return {};
   },
   methods: {
     updateDefault() {
       if (!this.$props.data.outbounds?.includes(this.$props.data.default)) {
-        delete this.$props.data.default
+        delete this.$props.data.default;
       }
-    }
+    },
   },
-}
+};
 </script>

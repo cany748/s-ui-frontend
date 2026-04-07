@@ -5,7 +5,7 @@
       <v-divider />
       <v-card-text>
         <v-row>
-          <v-col>{{ $t('rule.etaHint') }}</v-col>
+          <v-col>{{ $t("rule.etaHint") }}</v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -23,54 +23,52 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="resetChanges" color="error" variant="plain">{{ $t('reset') }}</v-btn>
+        <v-btn @click="resetChanges" color="error" variant="plain">{{ $t("reset") }}</v-btn>
         <v-spacer />
-        <v-btn @click="closeModal" color="primary" variant="outlined">{{ $t('actions.close') }}</v-btn>
-        <v-btn @click="saveChanges" color="primary" variant="tonal">{{ $t('actions.save') }}</v-btn>
+        <v-btn @click="closeModal" color="primary" variant="outlined">{{ $t("actions.close") }}</v-btn>
+        <v-btn @click="saveChanges" color="primary" variant="tonal">{{ $t("actions.save") }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-
 export default {
-  props: ['visible', 'label', 'content'],
-  emits: ['update', 'close'],
+  props: ["visible", "label", "content"],
+  emits: ["update", "close"],
   data() {
     return {
       dialog: false,
-      localText: '',
-    }
+      localText: "",
+    };
   },
   watch: {
     visible(v) {
       if (v) {
-        this.localText = this.content
+        this.localText = this.content;
       }
     },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     saveChanges() {
       const unique = [
         ...new Set(
           this.localText
-            .split('\n')
+            .split("\n")
             .map((l: string) => l.trim())
-            .filter((l: string) => l.length > 0)
+            .filter((l: string) => l.length > 0),
         ),
-      ]
-      this.$emit('update', unique)
-      this.dialog = false
+      ];
+      this.$emit("update", unique);
+      this.dialog = false;
     },
     resetChanges() {
-      this.localText = this.content
+      this.localText = this.content;
     },
     closeModal() {
-      this.$emit('close')
+      this.$emit("close");
     },
   },
-}
+};
 </script>

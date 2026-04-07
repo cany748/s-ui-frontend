@@ -2,32 +2,23 @@
   <v-card :subtitle="$t('objects.listen')">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field
-        :label="$t('in.addr')"
-        hide-details
-        required
-        v-model="data.listen">
-        </v-text-field>
+        <v-text-field :label="$t('in.addr')" hide-details required v-model="data.listen"> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
-        :label="$t('in.port')"
-        hide-details
-        type="number"
-        min="1"
-        max="65535"
-        required
-        v-model.number="data.listen_port"></v-text-field>
+          :label="$t('in.port')"
+          hide-details
+          type="number"
+          min="1"
+          max="65535"
+          required
+          v-model.number="data.listen_port"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4" v-if="optionDetour">
-        <v-select
-        :label="$t('listen.detourText')"
-        hide-details
-        :items="inTags"
-        v-model="data.detour">
-        </v-select>
+        <v-select :label="$t('listen.detourText')" hide-details :items="inTags" v-model="data.detour"> </v-select>
       </v-col>
     </v-row>
     <v-row v-if="optionTCP">
@@ -44,12 +35,13 @@
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
-        label="UDP NAT expiration"
-        hide-details
-        type="number"
-        min="1"
-        :suffix="$t('date.m')"
-        v-model.number="udpTimeout"></v-text-field>
+          label="UDP NAT expiration"
+          hide-details
+          type="number"
+          min="1"
+          :suffix="$t('date.m')"
+          v-model.number="udpTimeout"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionTcpKeepAlive">
@@ -67,7 +59,7 @@
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" hide-details variant="tonal">{{ $t('listen.options') }}</v-btn>
+          <v-btn v-bind="props" hide-details variant="tonal">{{ $t("listen.options") }}</v-btn>
         </template>
         <v-card>
           <v-list>
@@ -92,58 +84,66 @@
 
 <script lang="ts">
 export default {
-  props: ['data', 'inTags'],
+  props: ["data", "inTags"],
   data() {
     return {
-      menu: false
-    }
+      menu: false,
+    };
   },
   computed: {
     udpTimeout: {
-      get() { return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace('m','')) : 5 },
-      set(newValue:number) { this.$props.data.udp_timeout = newValue > 0 ? newValue + 'm' : '5m' }
+      get() {
+        return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
+      },
+      set(newValue: number) {
+        this.$props.data.udp_timeout = newValue > 0 ? newValue + "m" : "5m";
+      },
     },
     optionTCP: {
-      get(): boolean { 
-        return this.$props.data.tcp_fast_open != undefined && 
-               this.$props.data.tcp_multi_path != undefined
+      get(): boolean {
+        return this.$props.data.tcp_fast_open != undefined && this.$props.data.tcp_multi_path != undefined;
       },
-      set(v:boolean) {
-        this.$props.data.tcp_fast_open = v ? false : undefined
-        this.$props.data.tcp_multi_path = v ? false : undefined
-      }
+      set(v: boolean) {
+        this.$props.data.tcp_fast_open = v ? false : undefined;
+        this.$props.data.tcp_multi_path = v ? false : undefined;
+      },
     },
     optionUDP: {
-      get(): boolean { 
-        return this.$props.data.udp_fragment != undefined &&
-               this.$props.data.udp_timeout != undefined
+      get(): boolean {
+        return this.$props.data.udp_fragment != undefined && this.$props.data.udp_timeout != undefined;
       },
-      set(v:boolean) {
-        this.$props.data.udp_fragment = v ? false : undefined
-        this.$props.data.udp_timeout = v ? '5m' : undefined 
-      }
+      set(v: boolean) {
+        this.$props.data.udp_fragment = v ? false : undefined;
+        this.$props.data.udp_timeout = v ? "5m" : undefined;
+      },
     },
     optionDetour: {
-      get(): boolean { return this.$props.data.detour != undefined },
-      set(v:boolean) { this.$props.data.detour = v ? this.inTags[0]?? '' : undefined }
+      get(): boolean {
+        return this.$props.data.detour != undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.detour = v ? (this.inTags[0] ?? "") : undefined;
+      },
     },
     optionTcpKeepAlive: {
       get(): boolean {
-        return this.$props.data.disable_tcp_keep_alive != undefined ||
-               this.$props.data.tcp_keep_alive != undefined ||
-               this.$props.data.tcp_keep_alive_interval != undefined
+        return (
+          this.$props.data.disable_tcp_keep_alive != undefined ||
+          this.$props.data.tcp_keep_alive != undefined ||
+          this.$props.data.tcp_keep_alive_interval != undefined
+        );
       },
-      set(v:boolean) {
+      set(v: boolean) {
         if (v) {
-          this.$props.data.tcp_keep_alive = '5m'
-          this.$props.data.tcp_keep_alive_interval = '75s'
+          this.$props.data.tcp_keep_alive = "5m";
+          this.$props.data.tcp_keep_alive_interval = "75s";
         } else {
-          delete this.$props.data.disable_tcp_keep_alive
-          delete this.$props.data.tcp_keep_alive
-          delete this.$props.data.tcp_keep_alive_interval
+          delete this.$props.data.disable_tcp_keep_alive;
+          delete this.$props.data.tcp_keep_alive;
+          delete this.$props.data.tcp_keep_alive_interval;
         }
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 </script>

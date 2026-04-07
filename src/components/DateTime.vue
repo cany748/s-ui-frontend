@@ -7,100 +7,89 @@
     readonly
     hide-details
   ></v-text-field>
-  <DatePicker
-    v-model="Input"
-    @input="Input=$event"
-    :locale="locale"
-    element="expiry"
-    compact-time
-    type="datetime">
-      <template v-slot:next-month>
-        <v-icon icon="mdi-chevron-right" />
-      </template>
-      <template v-slot:prev-month>
-        <v-icon icon="mdi-chevron-left" />
-      </template>
-      <template #submit-btn="{ submit, canSubmit  }">
-        <v-btn
-          :disabled="!canSubmit"
-          @click="submit"
-        >{{ $t('submit') }}</v-btn>
-      </template>
-      <template #cancel-btn="{ vm }">
-        <v-btn
-          @click="reset(vm)"
-        >{{ $t('reset') }}</v-btn>
-      </template>
-      <template #now-btn="{ goToday }">
-        <v-btn
-          @click="goToday"
-        >{{ $t('now') }}</v-btn>
-      </template>
-    </DatePicker>
+  <DatePicker v-model="Input" @input="Input = $event" :locale="locale" element="expiry" compact-time type="datetime">
+    <template v-slot:next-month>
+      <v-icon icon="mdi-chevron-right" />
+    </template>
+    <template v-slot:prev-month>
+      <v-icon icon="mdi-chevron-left" />
+    </template>
+    <template #submit-btn="{ submit, canSubmit }">
+      <v-btn :disabled="!canSubmit" @click="submit">{{ $t("submit") }}</v-btn>
+    </template>
+    <template #cancel-btn="{ vm }">
+      <v-btn @click="reset(vm)">{{ $t("reset") }}</v-btn>
+    </template>
+    <template #now-btn="{ goToday }">
+      <v-btn @click="goToday">{{ $t("now") }}</v-btn>
+    </template>
+  </DatePicker>
 </template>
 
 <script lang="ts">
-import DatePicker from 'vue3-persian-datetime-picker'
-import { i18n, locale } from '@/locales'
-import 'moment/locale/ru'
-import 'moment/locale/vi'
-import 'moment/locale/zh-cn'
-import 'moment/locale/zh-tw'
+import DatePicker from "vue3-persian-datetime-picker";
+import { i18n, locale } from "@/locales";
+import "moment/locale/ru";
+import "moment/locale/vi";
+import "moment/locale/zh-cn";
+import "moment/locale/zh-tw";
 
 export default {
-  props: ['expiry'],
-  emits: ['submit'],
+  props: ["expiry"],
+  emits: ["submit"],
   data() {
     return {
       menu: false,
       input: new Date(),
-    }
+    };
   },
   components: { DatePicker },
   computed: {
     locale() {
-      return locale
+      return locale;
     },
     dateFormatted() {
-      if (this.expDate == 0) return i18n.global.t('unlimited')
-      const date = new Date(this.expDate*1000)
-      return date.toLocaleString(locale)
+      if (this.expDate == 0) return i18n.global.t("unlimited");
+      const date = new Date(this.expDate * 1000);
+      return date.toLocaleString(locale);
     },
     expDate() {
-      return parseInt(this.expiry?? 0)
+      return parseInt(this.expiry ?? 0);
     },
     Input: {
-      get() { return this.expDate == 0 ? new Date() : new Date(this.expDate*1000) },
-      set(v:string) {
-        this.input = new Date(v)
-        this.submit()
-      }
-    }
+      get() {
+        return this.expDate == 0 ? new Date() : new Date(this.expDate * 1000);
+      },
+      set(v: string) {
+        this.input = new Date(v);
+        this.submit();
+      },
+    },
   },
   methods: {
-    updateInput(v:Date) {
-      this.input = v
+    updateInput(v: Date) {
+      this.input = v;
     },
     setNow() {
-      this.input = new Date()
+      this.input = new Date();
     },
     submit() {
-      this.$emit('submit',Math.floor(this.input.getTime()/1000))
+      this.$emit("submit", Math.floor(this.input.getTime() / 1000));
     },
-    reset(vm:any) {
-      this.$emit('submit',0)
-      this.input = new Date()
-      vm.visible = false
-    }
+    reset(vm: any) {
+      this.$emit("submit", 0);
+      this.input = new Date();
+      vm.visible = false;
+    },
   },
   watch: {
     menu(v) {
       if (v) {
-        this.input = this.expiry == 0 ? new Date() : new Date(this.expDate*1000)
+        this.input = this.expiry == 0 ? new Date() : new Date(this.expDate * 1000);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
@@ -129,7 +118,7 @@ export default {
 .vpd-actions button:hover {
   background-color: transparent;
 }
-.vpd-wrapper[data-type=datetime].vpd-compact-time .vpd-time {
+.vpd-wrapper[data-type="datetime"].vpd-compact-time .vpd-time {
   border-top: 0;
 }
 .vpd-time .vpd-time-h .vpd-counter-item,

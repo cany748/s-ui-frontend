@@ -1,63 +1,63 @@
 <script lang="ts" setup>
-import { HumanReadable } from '@/plugins/utils'
-import { computed } from 'vue'
+import { HumanReadable } from "@/plugins/utils";
+import { computed } from "vue";
 
 const props = defineProps({
   tilesData: <any>{},
-  type: String
-})
+  type: String,
+});
 
 const data = computed(() => {
-  const d = props.tilesData
-  if (!d.mem && !d.cpu) return { percent: 0, text: '-' }
+  const d = props.tilesData;
+  if (!d.mem && !d.cpu) return { percent: 0, text: "-" };
   switch (props.type) {
-    case 'g-cpu':
-      return { percent: d.cpu, text: Math.ceil(d.cpu) + "%" }
-    case 'g-mem':
-      return gaugeData(d.mem)
-    case 'g-dsk':
-      return gaugeData(d.dsk)
-    case 'g-swp':
-      return gaugeData(d.swp)
+    case "g-cpu":
+      return { percent: d.cpu, text: Math.ceil(d.cpu) + "%" };
+    case "g-mem":
+      return gaugeData(d.mem);
+    case "g-dsk":
+      return gaugeData(d.dsk);
+    case "g-swp":
+      return gaugeData(d.swp);
   }
-  return { percent: 0, text: '-'}
-})
+  return { percent: 0, text: "-" };
+});
 
-const gaugeData = (d:any) :any => {
-  if (!d) return { percent: 0, text: '-' }
-  const curr = HumanReadable.sizeFormat(d.current,0).split(' ')
-  const total = HumanReadable.sizeFormat(d.total,0).split(' ')
-  if (curr[1] == total[1]) curr[1] = ''
+const gaugeData = (d: any): any => {
+  if (!d) return { percent: 0, text: "-" };
+  const curr = HumanReadable.sizeFormat(d.current, 0).split(" ");
+  const total = HumanReadable.sizeFormat(d.total, 0).split(" ");
+  if (curr[1] == total[1]) curr[1] = "";
   return {
-    percent: Math.ceil(d.current*100/d.total),
-    text: curr[0] + "<sup>" + (curr[1]?? ' ') + "</sup>/" +  total[0] + "<sup>" + (total[1]?? '') + "</sup>"
-  }
-}
+    percent: Math.ceil((d.current * 100) / d.total),
+    text: curr[0] + "<sup>" + (curr[1] ?? " ") + "</sup>/" + total[0] + "<sup>" + (total[1] ?? "") + "</sup>",
+  };
+};
 
 const cssTransformRotateValue = computed(() => {
-  const percentageAsFraction = data.value.percent / 100
-  const halfPercentage = percentageAsFraction / 2
+  const percentageAsFraction = data.value.percent / 100;
+  const halfPercentage = percentageAsFraction / 2;
 
-  return `${halfPercentage}turn`
-})
+  return `${halfPercentage}turn`;
+});
 
 const gaugeColor = computed(() => {
-  if (data.value.percent > 90) return 'error'
-  if (data.value.percent > 70) return 'warning'
-  return 'info'
-})
+  if (data.value.percent > 90) return "error";
+  if (data.value.percent > 70) return "warning";
+  return "info";
+});
 </script>
 
 <template>
   <div class="gauge__outer">
     <div class="gauge__inner">
       <div
-        class="gauge__fill" 
-        :style="{ 
+        class="gauge__fill"
+        :style="{
           transform: `rotate(${cssTransformRotateValue})`,
-          background: `rgb(var(--v-theme-${gaugeColor}))`
-          }">
-      </div>
+          background: `rgb(var(--v-theme-${gaugeColor}))`,
+        }"
+      ></div>
       <div class="gauge__cover"><span dir="ltr" v-html="data.text"></span></div>
     </div>
   </div>
@@ -108,7 +108,7 @@ const gaugeColor = computed(() => {
   justify-content: center;
   padding-bottom: 25%;
   box-sizing: border-box;
-  font-family: 'Lexend', sans-serif;
+  font-family: "Lexend", sans-serif;
   font-weight: bold;
   font-size: 32px;
 }

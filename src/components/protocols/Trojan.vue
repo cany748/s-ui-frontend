@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
-import Network from '@/components/Network.vue'
+import Network from "@/components/Network.vue";
 
 export default {
-  props: ['data'],
+  props: ["data"],
   data() {
-    return {}
+    return {};
   },
-  components: { Network }
-}
+  components: { Network },
+};
 </script>

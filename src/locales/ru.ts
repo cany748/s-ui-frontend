@@ -32,7 +32,7 @@ export default {
     invalidData: "Неверные данные",
   },
   theme: {
-    light: "Светлый", 
+    light: "Светлый",
     dark: "Темный",
     system: "Система",
   },
@@ -79,7 +79,7 @@ export default {
       startupTime: "Время запуска",
       threads: "Потоки",
       memory: "Память",
-      running: "Работает"
+      running: "Работает",
     },
     backup: {
       title: "Резервное копирование и восстановление",
@@ -291,7 +291,7 @@ export default {
       testUrl: "Тестовый URL",
       interval: "Интервал",
       tolerance: "Толерантность",
-      urlTestOptions: "Параметры URLTest"
+      urlTestOptions: "Параметры URLTest",
     },
     ts: {
       options: "Параметры Tailscale",
@@ -346,7 +346,7 @@ export default {
     anytls: {
       idleInterval: "Интервал проверки неактивных сессий",
       idleTimeout: "Тайм-аут неактивной сессии",
-      minIdle: "Минимум неактивных сессий"
+      minIdle: "Минимум неактивных сессий",
     },
   },
   in: {
@@ -450,7 +450,8 @@ export default {
       rulesTitle: "Импорт правил",
       urlsHint: "По одному URL в строке. Тег определяется из имени файла без расширения.",
       fileHint: "Загрузите .txt файл с URL-адресами, по одному в строке.",
-      jsonHint: "Вставьте JSON-объект с массивами rules и/или rule_set. Можно вставить весь блок \"route\": {'{'}...{'}'} или только его содержимое.",
+      jsonHint:
+        "Вставьте JSON-объект с массивами rules и/или rule_set. Можно вставить весь блок \"route\": {'{'}...{'}'} или только его содержимое.",
       fileJsonHint: "Загрузите .json файл с блоком route.",
       urlHint: "Укажите прямую ссылку на JSON-файл (например, raw-ссылку GitHub).",
       preview: "Предпросмотр",
@@ -517,13 +518,13 @@ export default {
           servFail: "Сбой сервера",
           nxDomain: "Не найдено",
           refused: "Отклонено",
-          notImp: "Не реализовано"
+          notImp: "Не реализовано",
         },
         answer: "Ответ",
         ns: "Серверы имён",
         extra: "Дополнительные",
       },
-    }
+    },
   },
   basic: {
     log: {
@@ -549,7 +550,7 @@ export default {
       secret: "Секрет",
       defaultMode: "Режим по умолчанию",
       allowOrigin: "Разрешить источник",
-      allowPrivate: "Разрешить частную сеть"
+      allowPrivate: "Разрешить частную сеть",
     },
   },
   tls: {
@@ -633,8 +634,4 @@ export default {
     s: "с",
     ms: "мс",
   },
-}
- 
-
-
-
+};

@@ -3,7 +3,7 @@
     <v-card class="rounded-lg">
       <v-card-title>
         <v-row>
-          <v-col>{{ $t('main.backup.title') }}</v-col>
+          <v-col>{{ $t("main.backup.title") }}</v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
             <v-icon icon="mdi-close" @click="control.visible = false" />
@@ -22,17 +22,17 @@
         </v-row>
         <v-row>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="backup()" hide-details>{{ $t('main.backup.backup') }}</v-btn>
+            <v-btn color="primary" @click="backup()" hide-details>{{ $t("main.backup.backup") }}</v-btn>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="restore()" hide-details>{{ $t('main.backup.restore') }}</v-btn>
+            <v-btn color="primary" @click="restore()" hide-details>{{ $t("main.backup.restore") }}</v-btn>
           </v-col>
         </v-row>
         <v-row>
           <v-divider></v-divider>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="config()" hide-details>{{ $t('main.backup.sbConfig') }}</v-btn>
+            <v-btn color="primary" @click="config()" hide-details>{{ $t("main.backup.sbConfig") }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -41,59 +41,59 @@
 </template>
 
 <script lang="ts">
-import HttpUtils from '@/plugins/httputil'
+import HttpUtils from "@/plugins/httputil";
 export default {
-  props: ['control', 'visible'],
+  props: ["control", "visible"],
   data() {
     return {
       exclude: ["stats", "changes"],
-    }
+    };
   },
   methods: {
     backup() {
-      const excludeOption = this.exclude.length>0 ? '?exclude=' +this.exclude.join(',') : ''
-      window.location.href = 'api/getdb' + excludeOption
+      const excludeOption = this.exclude.length > 0 ? "?exclude=" + this.exclude.join(",") : "";
+      window.location.href = "api/getdb" + excludeOption;
     },
     config() {
-      window.location.href = 'api/singbox-config'
+      window.location.href = "api/singbox-config";
     },
     restore() {
-      const fileInput = document.createElement('input')
-      fileInput.type = 'file'
-      fileInput.accept = '.db'
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = ".db";
 
-      fileInput.addEventListener('change', async (event: Event) => {
-        const inputElement = event.target as HTMLInputElement
-        const dbFile = inputElement.files ? inputElement.files[0] : null
+      fileInput.addEventListener("change", async (event: Event) => {
+        const inputElement = event.target as HTMLInputElement;
+        const dbFile = inputElement.files ? inputElement.files[0] : null;
 
         if (dbFile) {
-          const formData = new FormData()
-          formData.append('db', dbFile)
+          const formData = new FormData();
+          formData.append("db", dbFile);
 
-          this.control.visible = false
+          this.control.visible = false;
 
-          const uploadMsg = await HttpUtils.post('api/importdb', formData, {
-              headers: {
-                  'Content-Type': 'multipart/form-data',
-              },
-          })
+          const uploadMsg = await HttpUtils.post("api/importdb", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
           if (uploadMsg.success) {
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            location.reload()
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            location.reload();
           }
         }
-    })
+      });
 
-    fileInput.click()
-    }
+      fileInput.click();
+    },
   },
   watch: {
     visible(v) {
       if (v) {
-        this.exclude = ["stats", "changes"]
+        this.exclude = ["stats", "changes"];
       }
     },
   },
-}
+};
 </script>

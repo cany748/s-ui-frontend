@@ -28,7 +28,13 @@
         <v-text-field v-model="data.hostname" :label="$t('types.ts.hostname')"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4" v-if="optionUdpTimeout">
-        <v-text-field type="number" v-model.number="udpTimeout" min="1" :suffix="$t('date.s')" :label="$t('types.ts.udpTimeout')"></v-text-field>
+        <v-text-field
+          type="number"
+          v-model.number="udpTimeout"
+          min="1"
+          :suffix="$t('date.s')"
+          :label="$t('types.ts.udpTimeout')"
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionExitNode">
@@ -41,10 +47,20 @@
     </v-row>
     <v-row v-if="optionRelay">
       <v-col cols="12" sm="6" md="4">
-        <v-text-field v-model.number="data.relay_server_port" type="number" min="0" :label="$t('types.ts.relayServerPort')" hide-details></v-text-field>
+        <v-text-field
+          v-model.number="data.relay_server_port"
+          type="number"
+          min="0"
+          :label="$t('types.ts.relayServerPort')"
+          hide-details
+        ></v-text-field>
       </v-col>
       <v-col cols="12" sm="8">
-        <v-text-field v-model="relay_endpoints" :label="$t('types.ts.relayEndpoints') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+        <v-text-field
+          v-model="relay_endpoints"
+          :label="$t('types.ts.relayEndpoints') + ' ' + $t('commaSeparated')"
+          hide-details
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionSysIf">
@@ -55,7 +71,13 @@
         <v-text-field v-model="data.system_interface_name" :label="$t('types.ts.sysIfName')" hide-details></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4" v-if="data.system_interface">
-        <v-text-field v-model.number="data.system_interface_mtu" type="number" min="0" :label="$t('types.ts.sysIfMtu')" hide-details></v-text-field>
+        <v-text-field
+          v-model.number="data.system_interface_mtu"
+          type="number"
+          min="0"
+          :label="$t('types.ts.sysIfMtu')"
+          hide-details
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionAdvRoutes">
@@ -70,7 +92,7 @@
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" hide-details variant="tonal">{{ $t('types.ts.options') }}</v-btn>
+          <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.ts.options") }}</v-btn>
         </template>
         <v-card>
           <v-list>
@@ -110,91 +132,131 @@
 
 <script lang="ts">
 export default {
-  props: ['data'],
+  props: ["data"],
   data() {
     return {
       menu: false,
-    }
+    };
   },
   computed: {
     optionStateDir: {
-      get() { return this.$props.data?.state_directory !== undefined },
-      set(v: boolean) { this.$props.data.state_directory = v ? "$HOME/.tailscale" : undefined }
+      get() {
+        return this.$props.data?.state_directory !== undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.state_directory = v ? "$HOME/.tailscale" : undefined;
+      },
     },
     optionAuth: {
-      get() { return this.$props.data?.auth_key !== undefined },
-      set(v: boolean) { this.$props.data.auth_key = v ? "" : undefined }
+      get() {
+        return this.$props.data?.auth_key !== undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.auth_key = v ? "" : undefined;
+      },
     },
     optionCtrlUrl: {
-      get() { return this.$props.data?.control_url !== undefined },
-      set(v: boolean) { this.$props.data.control_url = v ? "https://controlplane.tailscale.com" : undefined }
+      get() {
+        return this.$props.data?.control_url !== undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.control_url = v ? "https://controlplane.tailscale.com" : undefined;
+      },
     },
     optionHostname: {
-      get() { return this.$props.data?.hostname !== undefined },
-      set(v: boolean) { this.$props.data.hostname = v ? "localhost" : undefined }
+      get() {
+        return this.$props.data?.hostname !== undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.hostname = v ? "localhost" : undefined;
+      },
     },
     optionExitNode: {
-      get() { return this.$props.data?.exit_node !== undefined },
-      set(v: boolean) { 
+      get() {
+        return this.$props.data?.exit_node !== undefined;
+      },
+      set(v: boolean) {
         if (v) {
-          this.$props.data.exit_node = ""
+          this.$props.data.exit_node = "";
         } else {
-          delete this.$props.data.exit_node
-          delete this.$props.data.exit_node_allow_lan_access
+          delete this.$props.data.exit_node;
+          delete this.$props.data.exit_node_allow_lan_access;
         }
-      }
+      },
     },
     optionAdvRoutes: {
-      get() { return this.$props.data?.advertise_routes !== undefined },
-      set(v: boolean) { 
+      get() {
+        return this.$props.data?.advertise_routes !== undefined;
+      },
+      set(v: boolean) {
         if (v) {
-          this.$props.data.advertise_routes = []
+          this.$props.data.advertise_routes = [];
         } else {
-          delete this.$props.data.advertise_routes
-          delete this.$props.data.advertise_exit_node
+          delete this.$props.data.advertise_routes;
+          delete this.$props.data.advertise_exit_node;
         }
-      }
+      },
     },
     optionRelay: {
-      get() { return this.$props.data?.relay_server_port !== undefined || (this.$props.data?.relay_server_static_endpoints?.length ?? 0) > 0 },
+      get() {
+        return this.$props.data?.relay_server_port !== undefined || (this.$props.data?.relay_server_static_endpoints?.length ?? 0) > 0;
+      },
       set(v: boolean) {
         if (v) {
-          this.$props.data.relay_server_port = 0
-          this.$props.data.relay_server_static_endpoints = []
+          this.$props.data.relay_server_port = 0;
+          this.$props.data.relay_server_static_endpoints = [];
         } else {
-          delete this.$props.data.relay_server_port
-          delete this.$props.data.relay_server_static_endpoints
+          delete this.$props.data.relay_server_port;
+          delete this.$props.data.relay_server_static_endpoints;
         }
-      }
+      },
     },
     optionSysIf: {
-      get() { return this.$props.data?.system_interface !== undefined },
+      get() {
+        return this.$props.data?.system_interface !== undefined;
+      },
       set(v: boolean) {
         if (v) {
-          this.$props.data.system_interface = false
+          this.$props.data.system_interface = false;
         } else {
-          delete this.$props.data.system_interface
-          delete this.$props.data.system_interface_name
-          delete this.$props.data.system_interface_mtu
+          delete this.$props.data.system_interface;
+          delete this.$props.data.system_interface_name;
+          delete this.$props.data.system_interface_mtu;
         }
-      }
+      },
     },
     optionUdpTimeout: {
-      get() { return this.$props.data?.udp_timeout !== undefined },
-      set(v: boolean) { this.$props.data.udp_timeout = v ? '30s' : undefined }
+      get() {
+        return this.$props.data?.udp_timeout !== undefined;
+      },
+      set(v: boolean) {
+        this.$props.data.udp_timeout = v ? "30s" : undefined;
+      },
     },
     udpTimeout: {
-      get() { return this.$props.data?.udp_timeout? this.$props.data.udp_timeout.replace('s','') : '' },
-      set(v: number) { this.$props.data.udp_timeout = v>1 ? v + 's' : '30s' }
+      get() {
+        return this.$props.data?.udp_timeout ? this.$props.data.udp_timeout.replace("s", "") : "";
+      },
+      set(v: number) {
+        this.$props.data.udp_timeout = v > 1 ? v + "s" : "30s";
+      },
     },
     advertise_routes: {
-      get() { return this.$props.data?.advertise_routes?.join(',') ?? "" },
-      set(v: string) { this.$props.data.advertise_routes = v.length > 0 ? v.split(',') : [] }
+      get() {
+        return this.$props.data?.advertise_routes?.join(",") ?? "";
+      },
+      set(v: string) {
+        this.$props.data.advertise_routes = v.length > 0 ? v.split(",") : [];
+      },
     },
     relay_endpoints: {
-      get() { return this.$props.data?.relay_server_static_endpoints?.join(',') ?? "" },
-      set(v: string) { this.$props.data.relay_server_static_endpoints = v.length > 0 ? v.split(',') : [] }
+      get() {
+        return this.$props.data?.relay_server_static_endpoints?.join(",") ?? "";
+      },
+      set(v: string) {
+        this.$props.data.relay_server_static_endpoints = v.length > 0 ? v.split(",") : [];
+      },
     },
   },
-}
+};
 </script>

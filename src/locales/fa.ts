@@ -79,7 +79,7 @@ export default {
       startupTime: "زمان راه‌اندازی",
       threads: "نخ‌ها",
       memory: "حافظه",
-      running: "اجرا"
+      running: "اجرا",
     },
     backup: {
       title: "پشتیبان‌گیری و بازیابی",
@@ -290,7 +290,7 @@ export default {
       testUrl: "URL تست",
       interval: "فاصله زمانی",
       tolerance: "تحمل",
-      urlTestOptions: "گزینه‌های URLTest"
+      urlTestOptions: "گزینه‌های URLTest",
     },
     ts: {
       options: "گزینه‌های Tailscale",
@@ -406,7 +406,7 @@ export default {
     addr: "آدرس سرور",
     port: "پورت سرور",
     addUrlTest: "افزودن URLTest",
-    delay: "تأخیر"
+    delay: "تأخیر",
   },
   rule: {
     add: "ایجاد قانون",
@@ -449,7 +449,8 @@ export default {
       rulesTitle: "ورود قوانین",
       urlsHint: "در هر خط یک URL. برچسب از نام فایل بدون پسوند تعیین می‌شود.",
       fileHint: "فایل .txt حاوی URLها را بارگذاری کنید؛ در هر خط یک مورد.",
-      jsonHint: "یک شی JSON با آرایه‌های rules و/یا rule_set قرار دهید. می‌توانید کل بلوک «route»: {'{'}...{'}'} یا فقط محتوایش را بچسبانید.",
+      jsonHint:
+        "یک شی JSON با آرایه‌های rules و/یا rule_set قرار دهید. می‌توانید کل بلوک «route»: {'{'}...{'}'} یا فقط محتوایش را بچسبانید.",
       fileJsonHint: "فایل .json حاوی بلوک route را بارگذاری کنید.",
       urlHint: "لینک مستقیم فایل JSON را وارد کنید (مثلاً لینک raw گیت‌هاب).",
       preview: "پیش‌نمایش",
@@ -467,12 +468,12 @@ export default {
       conflictDesc: "پیکربندی از قبل {rules} قانون و {rulesets} مجموعه قانون دارد. عمل را انتخاب کنید:",
       finalOutbound: "خروجی پیش‌فرض (final)",
       applyFinal: "اعمال به‌عنوان خروجی پیش‌فرض",
-      errNoArrays: 'هیچ آرایهٔ «rules» یا «rule_set» یافت نشد.',
+      errNoArrays: "هیچ آرایهٔ «rules» یا «rule_set» یافت نشد.",
       errJsonParse: "خطای تجزیهٔ JSON: <p dir='ltr'>{message}</p>",
-      errNoArraysFetched: 'در JSON دریافت‌شده «rules» یا «rule_set» یافت نشد.',
+      errNoArraysFetched: "در JSON دریافت‌شده «rules» یا «rule_set» یافت نشد.",
       errFetch: "خطای دریافت: <p dir='ltr'>{message}</p>",
       errNoFile: "فایلی انتخاب نشده است.",
-      errNoArraysInFile: 'در فایل «rules» یا «rule_set» یافت نشد.',
+      errNoArraysInFile: "در فایل «rules» یا «rule_set» یافت نشد.",
     },
   },
   ruleset: {
@@ -631,5 +632,5 @@ export default {
     m: "د",
     s: "ث",
     ms: "م‌ث",
-  }
-}
+  },
+};
