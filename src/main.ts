@@ -8,6 +8,8 @@
 import { createApp, ref } from "vue";
 
 // Components
+import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
+import { createNotivue } from "notivue";
 import App from "./App.vue";
 
 // Use router
@@ -21,12 +23,11 @@ import { registerPlugins } from "@/plugins";
 
 // Locale
 import { i18n } from "@/locales";
-import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
 // Notivue
-import { createNotivue } from "notivue";
 import "notivue/notification.css";
 import "notivue/animations.css";
+
 const notivue = createNotivue({
   position: "bottom-center",
   limit: 4,

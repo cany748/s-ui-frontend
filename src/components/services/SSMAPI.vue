@@ -6,19 +6,19 @@
     </v-card-subtitle>
     <v-row v-for="(server, index) in servers">
       <v-col cols="auto" align-self="center" justify-self="center">
-        <v-icon @click="del_server(index)" color="error" icon="mdi-delete" />
+        <v-icon color="error" icon="mdi-delete" @click="del_server(index)" />
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('transport.path')" hide-details @input="update_key(index, $event.target.value)" v-model="server.name">
+        <v-text-field v-model="server.name" :label="$t('transport.path')" hide-details @input="update_key(index, $event.target.value)">
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-select
+          v-model="server.value"
           :label="$t('objects.inbound')"
           hide-details
           :items="ssTags"
           @update:model-value="update_value(index, $event)"
-          v-model="server.value"
         >
         </v-select>
       </v-col>
@@ -36,45 +36,25 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    add_server() {
-      this.servers = [...this.servers, { name: "/ss" + this.servers.length, value: this.ssTags[0] || "" }];
-    },
-    del_server(i: number) {
-      let h = this.servers;
-      h.splice(i, 1);
-      this.servers = h;
-    },
-    update_key(i: number, k: string) {
-      let h = this.servers;
-      h[i].name = k;
-      this.servers = h;
-    },
-    update_value(i: number, v: string) {
-      let h = this.servers;
-      h[i].value = v;
-      this.servers = h;
-    },
-  },
   computed: {
     servers: {
       get(): Server[] {
-        let servers: Server[] = [];
+        const servers: Server[] = [];
         const h = this.$props.data.servers;
         if (h) {
-          Object.keys(h).forEach((key) => {
+          for (const key of Object.keys(h)) {
             if (Array.isArray(h[key])) {
               h[key].forEach((v: string) => servers.push({ name: key, value: v }));
             } else {
               servers.push({ name: key, value: h[key] });
             }
-          });
+          }
         }
         return servers;
       },
       set(v: Server[]) {
         if (v.length > 0) {
-          let servers: any = {};
+          const servers: any = {};
           v.forEach((h: Server) => {
             if (servers[h.name]) {
               if (Array.isArray(servers[h.name])) {
@@ -91,6 +71,26 @@ export default {
           this.$props.data.servers = undefined;
         }
       },
+    },
+  },
+  methods: {
+    add_server() {
+      this.servers = [...this.servers, { name: `/ss${this.servers.length}`, value: this.ssTags[0] || "" }];
+    },
+    del_server(i: number) {
+      const h = this.servers;
+      h.splice(i, 1);
+      this.servers = h;
+    },
+    update_key(i: number, k: string) {
+      const h = this.servers;
+      h[i].name = k;
+      this.servers = h;
+    },
+    update_value(i: number, v: string) {
+      const h = this.servers;
+      h[i].value = v;
+      this.servers = h;
     },
   },
 };

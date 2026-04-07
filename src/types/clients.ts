@@ -57,11 +57,11 @@ type Config = {
 
 export function updateConfigs(configs: Config, newUserName: string): Config {
   for (const key in configs) {
-    if (configs.hasOwnProperty(key)) {
+    if (Object.hasOwn(configs, key)) {
       const config = configs[key];
-      if (config.hasOwnProperty("name")) {
+      if (Object.hasOwn(config, "name")) {
         config.name = newUserName;
-      } else if (config.hasOwnProperty("username")) {
+      } else if (Object.hasOwn(config, "username")) {
         config.username = newUserName;
       }
     }
@@ -71,7 +71,7 @@ export function updateConfigs(configs: Config, newUserName: string): Config {
 
 export function shuffleConfigs(configs: Config, key?: string) {
   const keys = key ? [key] : Object.keys(configs);
-  keys.forEach((k) => {
+  for (const k of keys) {
     switch (k) {
       case "mixed":
       case "socks":
@@ -79,31 +79,38 @@ export function shuffleConfigs(configs: Config, key?: string) {
       case "anytls":
       case "trojan":
       case "naive":
-      case "hysteria2":
+      case "hysteria2": {
         configs[k].password = RandomUtil.randomSeq(10);
         break;
-      case "shadowsocks":
+      }
+      case "shadowsocks": {
         configs[k].password = RandomUtil.randomShadowsocksPassword(32);
         break;
-      case "shadowsocks16":
+      }
+      case "shadowsocks16": {
         configs[k].password = RandomUtil.randomShadowsocksPassword(16);
         break;
-      case "shadowtls":
+      }
+      case "shadowtls": {
         configs[k].password = RandomUtil.randomShadowsocksPassword(32);
         break;
-      case "hysteria":
+      }
+      case "hysteria": {
         configs[k].auth_str = RandomUtil.randomSeq(10);
         break;
-      case "tuic":
+      }
+      case "tuic": {
         configs[k].password = RandomUtil.randomSeq(10);
         configs[k].uuid = RandomUtil.randomUUID();
         break;
+      }
       case "vmess":
-      case "vless":
+      case "vless": {
         configs[k].uuid = RandomUtil.randomUUID();
         break;
+      }
     }
-  });
+  }
 }
 
 export function randomConfigs(user: string): Config {
@@ -138,12 +145,12 @@ export function randomConfigs(user: string): Config {
     },
     vmess: {
       name: user,
-      uuid: uuid,
+      uuid,
       alterId: 0,
     },
     vless: {
       name: user,
-      uuid: uuid,
+      uuid,
       flow: "xtls-rprx-vision",
     },
     anytls: {
@@ -164,7 +171,7 @@ export function randomConfigs(user: string): Config {
     },
     tuic: {
       name: user,
-      uuid: uuid,
+      uuid,
       password: mixedPassword,
     },
     hysteria2: {
@@ -176,7 +183,7 @@ export function randomConfigs(user: string): Config {
 
 export function createClient<T extends Client>(json?: Partial<T>): Client {
   defaultClient.name = RandomUtil.randomSeq(8);
-  const defaultObject: Client = { ...defaultClient, ...(json || {}) };
+  const defaultObject: Client = { ...defaultClient, ...json };
 
   // Add missing config
   defaultObject.config = { ...randomConfigs(defaultObject.name), ...defaultObject.config };

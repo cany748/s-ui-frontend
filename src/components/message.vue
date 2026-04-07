@@ -1,13 +1,13 @@
 <template>
   <Notivue v-slot="item">
     <NotivueSwipe :item="item">
-      <Notification :item="item" :theme="theme" :dir="direction" :icons="outlinedIcons" :hideClose="true" @click="item.clear" />
+      <Notification :item="item" :theme="theme" :dir="direction" :icons="outlinedIcons" :hide-close="true" @click="item.clear" />
     </NotivueSwipe>
   </Notivue>
 </template>
 
 <script lang="ts" setup>
-import { Notivue, Notification, NotivueSwipe, outlinedIcons, pastelTheme, darkTheme } from "notivue";
+import { Notification, Notivue, NotivueSwipe, darkTheme, outlinedIcons, pastelTheme } from "notivue";
 import { computed } from "vue";
 import { useTheme } from "vuetify";
 import vuetify from "@/plugins/vuetify";

@@ -6,39 +6,39 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" v-if="optionUrl">
+      <v-col v-if="optionUrl" cols="12" sm="6">
         <v-text-field v-model="data.url" :label="$t('types.lb.testUrl')" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionInterval">
+      <v-col v-if="optionInterval" cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="interval"
           :label="$t('types.lb.interval')"
           hide-details
           type="number"
           min="3"
           :suffix="$t('date.s')"
-          v-model.number="interval"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionTolerance">
+      <v-col v-if="optionTolerance" cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="tolerance"
           :label="$t('types.lb.tolerance')"
           hide-details
           type="number"
           min="0"
           :suffix="$t('date.ms')"
-          v-model.number="tolerance"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionIdle">
+      <v-col v-if="optionIdle" cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="idle_timeout"
           :label="$t('transport.idleTimeout')"
           hide-details
           type="number"
           min="0"
           :suffix="$t('date.m')"
-          v-model.number="idle_timeout"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -50,7 +50,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.lb.urlTestOptions") }}</v-btn>
         </template>
         <v-card>
@@ -117,26 +117,26 @@ export default {
     },
     interval: {
       get() {
-        return this.$props.data.interval ? parseInt(this.$props.data.interval.replace("s", "")) : 3;
+        return this.$props.data.interval ? Number.parseInt(this.$props.data.interval.replace("s", "")) : 3;
       },
       set(v: number) {
-        this.$props.data.interval = v > 0 ? v + "s" : "3s";
+        this.$props.data.interval = v > 0 ? `${v}s` : "3s";
       },
     },
     tolerance: {
       get() {
-        return this.$props.data.tolerance ? parseInt(this.$props.data.tolerance) : 0;
+        return this.$props.data.tolerance ? Number.parseInt(this.$props.data.tolerance) : 0;
       },
       set(v: number) {
-        this.$props.data.tolerance = v > 0 ? v : 0;
+        this.$props.data.tolerance = Math.max(v, 0);
       },
     },
     idle_timeout: {
       get() {
-        return this.$props.data.idle_timeout ? parseInt(this.$props.data.idle_timeout.replace("m", "")) : 30;
+        return this.$props.data.idle_timeout ? Number.parseInt(this.$props.data.idle_timeout.replace("m", "")) : 30;
       },
       set(v: number) {
-        this.$props.data.idle_timeout = v > 0 ? v + "m" : "0m";
+        this.$props.data.idle_timeout = v > 0 ? `${v}m` : "0m";
       },
     },
   },

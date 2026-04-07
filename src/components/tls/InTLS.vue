@@ -2,7 +2,7 @@
   <v-card :subtitle="$t('objects.tls')">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :label="$t('template')" :items="tlsItems" v-model="inbound.tls_id"> </v-select>
+        <v-select v-model="inbound.tls_id" hide-details :label="$t('template')" :items="tlsItems"> </v-select>
       </v-col>
     </v-row>
   </v-card>
@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { i18n } from "@/locales";
+
 export default {
   props: ["inbound", "tlsConfigs"],
   computed: {

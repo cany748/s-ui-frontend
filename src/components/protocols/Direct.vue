@@ -5,10 +5,10 @@
         <Network :data="data" />
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.direct.overrideAddr')" hide-details v-model="data.override_address"> </v-text-field>
+        <v-text-field v-model="data.override_address" :label="$t('types.direct.overrideAddr')" hide-details> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.direct.overridePort')" type="number" min="0" hide-details v-model.number="override_port">
+        <v-text-field v-model.number="override_port" :label="$t('types.direct.overridePort')" type="number" min="0" hide-details>
         </v-text-field>
       </v-col>
     </v-row>
@@ -19,6 +19,7 @@
 import Network from "@/components/Network.vue";
 
 export default {
+  components: { Network },
   props: ["data"],
   data() {
     return {};
@@ -29,10 +30,9 @@ export default {
         return this.$props.data.override_port ? this.$props.data.override_port : "";
       },
       set(newValue: any) {
-        this.$props.data.override_port = newValue.length == 0 || newValue == 0 ? undefined : parseInt(newValue);
+        this.$props.data.override_port = newValue.length === 0 || newValue == 0 ? undefined : Number.parseInt(newValue);
       },
     },
   },
-  components: { Network },
 };
 </script>

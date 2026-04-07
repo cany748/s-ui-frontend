@@ -22,17 +22,17 @@
         </v-row>
         <v-row>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="backup()" hide-details>{{ $t("main.backup.backup") }}</v-btn>
+            <v-btn color="primary" hide-details @click="backup()">{{ $t("main.backup.backup") }}</v-btn>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="restore()" hide-details>{{ $t("main.backup.restore") }}</v-btn>
+            <v-btn color="primary" hide-details @click="restore()">{{ $t("main.backup.restore") }}</v-btn>
           </v-col>
         </v-row>
         <v-row>
           <v-divider></v-divider>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" @click="config()" hide-details>{{ $t("main.backup.sbConfig") }}</v-btn>
+            <v-btn color="primary" hide-details @click="config()">{{ $t("main.backup.sbConfig") }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import HttpUtils from "@/plugins/httputil";
+
 export default {
   props: ["control", "visible"],
   data() {
@@ -49,10 +50,17 @@ export default {
       exclude: ["stats", "changes"],
     };
   },
+  watch: {
+    visible(v) {
+      if (v) {
+        this.exclude = ["stats", "changes"];
+      }
+    },
+  },
   methods: {
     backup() {
-      const excludeOption = this.exclude.length > 0 ? "?exclude=" + this.exclude.join(",") : "";
-      window.location.href = "api/getdb" + excludeOption;
+      const excludeOption = this.exclude.length > 0 ? `?exclude=${this.exclude.join(",")}` : "";
+      window.location.href = `api/getdb${excludeOption}`;
     },
     config() {
       window.location.href = "api/singbox-config";
@@ -86,13 +94,6 @@ export default {
       });
 
       fileInput.click();
-    },
-  },
-  watch: {
-    visible(v) {
-      if (v) {
-        this.exclude = ["stats", "changes"];
-      }
     },
   },
 };

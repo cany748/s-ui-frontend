@@ -14,15 +14,15 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" sm="6" md="4">
-            <v-select hide-details :label="$t('basic.log.level')" :items="logLevels" v-model="logLevel" @update:model-value="loadData">
+            <v-select v-model="logLevel" hide-details :label="$t('basic.log.level')" :items="logLevels" @update:model-value="loadData">
             </v-select>
           </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select
+              v-model.number="logCount"
               hide-details
               :label="$t('count')"
               :items="[10, 20, 30, 50, 100]"
-              v-model.number="logCount"
               @update:model-value="loadData"
             >
             </v-select>
@@ -58,16 +58,6 @@ export default {
       logCount: 10,
     };
   },
-  methods: {
-    async loadData() {
-      this.loading = true;
-      const data = await HttpUtils.get("api/logs", { c: this.logCount, l: this.logLevel });
-      if (data.success) {
-        this.lines = data.obj ?? [];
-        this.loading = false;
-      }
-    },
-  },
   watch: {
     visible(v) {
       this.lines = [];
@@ -75,6 +65,16 @@ export default {
       this.logCount = 10;
       if (v) {
         this.loadData();
+      }
+    },
+  },
+  methods: {
+    async loadData() {
+      this.loading = true;
+      const data = await HttpUtils.get("api/logs", { c: this.logCount, l: this.logLevel });
+      if (data.success) {
+        this.lines = data.obj ?? [];
+        this.loading = false;
       }
     },
   },

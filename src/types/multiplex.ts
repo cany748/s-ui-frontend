@@ -1,4 +1,4 @@
-import { Brutal } from "./brutal";
+import type { Brutal } from "./brutal";
 
 export interface iMultiplex {
   enabled: boolean;

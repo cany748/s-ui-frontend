@@ -2,13 +2,13 @@
   <v-card subtitle="HTTP">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.un')" hide-details v-model="username"> </v-text-field>
+        <v-text-field v-model="username" :label="$t('types.un')" hide-details> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.pw')" hide-details v-model="password"> </v-text-field>
+        <v-text-field v-model="password" :label="$t('types.pw')" hide-details> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('transport.path')" hide-details v-model="data.path"> </v-text-field>
+        <v-text-field v-model="data.path" :label="$t('transport.path')" hide-details> </v-text-field>
       </v-col>
     </v-row>
     <Headers :data="data" />
@@ -19,6 +19,7 @@
 import Headers from "@/components/Headers.vue";
 
 export default {
+  components: { Headers },
   props: ["data"],
   data() {
     return {};
@@ -41,6 +42,5 @@ export default {
       },
     },
   },
-  components: { Headers },
 };
 </script>

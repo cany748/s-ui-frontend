@@ -4,19 +4,19 @@
     <span v-else style="width: 24px"></span>
     <v-app-bar-title :text="$t(<string>route.name)" class="align-center text-center" />
     <v-menu>
-      <template v-slot:activator="{ props }">
+      <template #activator="{ props }">
         <v-btn icon v-bind="props">
           <v-icon>mdi-translate</v-icon>
         </v-btn>
       </template>
       <v-list>
-        <v-list-item v-for="lang in languages" :key="lang.value" @click="changeLocale(lang.value)" :active="isActiveLocale(lang.value)">
+        <v-list-item v-for="lang in languages" :key="lang.value" :active="isActiveLocale(lang.value)" @click="changeLocale(lang.value)">
           <v-list-item-title>{{ lang.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
     <v-menu>
-      <template v-slot:activator="{ props }">
+      <template #activator="{ props }">
         <v-btn icon v-bind="props">
           <v-icon>mdi-theme-light-dark</v-icon>
         </v-btn>
@@ -25,9 +25,9 @@
         <v-list-item
           v-for="th in themes"
           :key="th.value"
-          @click="changeTheme(th.value)"
           :prepend-icon="th.icon"
           :active="isActiveTheme(th.value)"
+          @click="changeTheme(th.value)"
         >
           <v-list-item-title>{{ $t(`theme.${th.value}`) }}</v-list-item-title>
         </v-list-item>

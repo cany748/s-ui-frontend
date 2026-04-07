@@ -1,16 +1,16 @@
 <template>
   <v-card style="background-color: inherit">
     <v-row>
-      <v-col cols="12" v-if="optionInbound">
+      <v-col v-if="optionInbound" cols="12">
         <v-combobox v-model="rule.inbound" :items="inTags" :label="$t('pages.inbounds')" multiple chips hide-details></v-combobox>
       </v-col>
-      <v-col cols="12" v-if="optionClient">
+      <v-col v-if="optionClient" cols="12">
         <v-combobox v-model="rule.auth_user" :items="clients" :label="$t('pages.clients')" multiple chips hide-details></v-combobox>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionIPver">
-        <v-select hide-details :label="$t('rule.ipVer')" :items="[4, 6]" v-model.number="rule.ip_version"> </v-select>
+      <v-col v-if="optionIPver" cols="12" sm="6" md="4">
+        <v-select v-model.number="rule.ip_version" hide-details :label="$t('rule.ipVer')" :items="[4, 6]"> </v-select>
       </v-col>
-      <v-col cols="12" sm="6" v-if="optionProtocol">
+      <v-col v-if="optionProtocol" cols="12" sm="6">
         <v-combobox
           v-model="rule.protocol"
           :items="['http', 'tls', 'quic', 'stun', 'dns']"
@@ -23,46 +23,46 @@
     </v-row>
     <v-row v-if="optionDomain">
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :items="domainKeys" @update:model-value="updateDomainOption($event)" v-model="domainOption"> </v-select>
+        <v-select v-model="domainOption" hide-details :items="domainKeys" @update:model-value="updateDomainOption($event)"> </v-select>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.domain != undefined">
-        <v-text-field :label="$t('rule.domain') + ' ' + $t('commaSeparated')" hide-details v-model="domain"></v-text-field>
+      <v-col v-if="rule.domain != undefined" cols="12" sm="6">
+        <v-text-field v-model="domain" :label="`${$t('rule.domain')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.domain_suffix != undefined">
-        <v-text-field :label="$t('rule.domainSufix') + ' ' + $t('commaSeparated')" hide-details v-model="domain_suffix"></v-text-field>
+      <v-col v-if="rule.domain_suffix != undefined" cols="12" sm="6">
+        <v-text-field v-model="domain_suffix" :label="`${$t('rule.domainSufix')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.domain_keyword != undefined">
-        <v-text-field :label="$t('rule.domainKw') + ' ' + $t('commaSeparated')" hide-details v-model="domain_keyword"></v-text-field>
+      <v-col v-if="rule.domain_keyword != undefined" cols="12" sm="6">
+        <v-text-field v-model="domain_keyword" :label="`${$t('rule.domainKw')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.domain_regex != undefined">
-        <v-text-field :label="$t('rule.domainRgx') + ' ' + $t('commaSeparated')" hide-details v-model="domain_regex"></v-text-field>
+      <v-col v-if="rule.domain_regex != undefined" cols="12" sm="6">
+        <v-text-field v-model="domain_regex" :label="`${$t('rule.domainRgx')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionPort">
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :items="portKeys" @update:model-value="updatePortOption($event)" v-model="portOption"> </v-select>
+        <v-select v-model="portOption" hide-details :items="portKeys" @update:model-value="updatePortOption($event)"> </v-select>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.port != undefined">
-        <v-text-field :label="$t('rule.port') + ' ' + $t('commaSeparated')" hide-details v-model="port"></v-text-field>
+      <v-col v-if="rule.port != undefined" cols="12" sm="6">
+        <v-text-field v-model="port" :label="`${$t('rule.port')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.port_range != undefined">
-        <v-text-field :label="$t('rule.portRange') + ' ' + $t('commaSeparated')" hide-details v-model="port_range"></v-text-field>
+      <v-col v-if="rule.port_range != undefined" cols="12" sm="6">
+        <v-text-field v-model="port_range" :label="`${$t('rule.portRange')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionSrcIP">
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :items="srcIPKeys" @update:model-value="updateSrcIPOption($event)" v-model="srcIPOption"> </v-select>
+        <v-select v-model="srcIPOption" hide-details :items="srcIPKeys" @update:model-value="updateSrcIPOption($event)"> </v-select>
       </v-col>
     </v-row>
     <v-row v-if="optionSrcPort">
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :items="srcPortKeys" @update:model-value="updateSrcPortOption($event)" v-model="srcPortOption"> </v-select>
+        <v-select v-model="srcPortOption" hide-details :items="srcPortKeys" @update:model-value="updateSrcPortOption($event)"> </v-select>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.source_port != undefined">
-        <v-text-field :label="$t('rule.srcPort') + ' ' + $t('commaSeparated')" hide-details v-model="source_port"></v-text-field>
+      <v-col v-if="rule.source_port != undefined" cols="12" sm="6">
+        <v-text-field v-model="source_port" :label="`${$t('rule.srcPort')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" v-if="rule.source_port_range != undefined">
-        <v-text-field :label="$t('rule.srcPortRange') + ' ' + $t('commaSeparated')" hide-details v-model="source_port_range"></v-text-field>
+      <v-col v-if="rule.source_port_range != undefined" cols="12" sm="6">
+        <v-text-field v-model="source_port_range" :label="`${$t('rule.srcPortRange')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionRuleSet">
@@ -73,7 +73,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("rule.options") }}</v-btn>
         </template>
         <v-card>
@@ -128,24 +128,6 @@ export default {
       srcPortOption: "source_port",
     };
   },
-  methods: {
-    updateDomainOption(option: string) {
-      this.domainKeys.forEach((k) => delete this.$props.rule[k]);
-      this.$props.rule[option] = [];
-    },
-    updatePortOption(option: string) {
-      this.portKeys.forEach((k) => delete this.$props.rule[k]);
-      this.$props.rule[option] = [];
-    },
-    updateSrcIPOption(option: string) {
-      this.srcIPKeys.forEach((k) => delete this.$props.rule[k]);
-      this.$props.rule[option] = option == "source_ip_is_private" ? false : [];
-    },
-    updateSrcPortOption(option: string) {
-      this.srcPortKeys.forEach((k) => delete this.$props.rule[k]);
-      this.$props.rule[option] = [];
-    },
-  },
   computed: {
     optionInbound: {
       get() {
@@ -187,7 +169,7 @@ export default {
         if (v) {
           this.$props.rule.domain = [];
         } else {
-          this.domainKeys.forEach((k) => delete this.$props.rule[k]);
+          for (const k of this.domainKeys) delete this.$props.rule[k];
         }
         this.domainOption = "domain";
       },
@@ -200,7 +182,7 @@ export default {
         if (v) {
           this.$props.rule.port = [];
         } else {
-          this.portKeys.forEach((k) => delete this.$props.rule[k]);
+          for (const k of this.portKeys) delete this.$props.rule[k];
         }
         this.portOption = "port";
       },
@@ -213,7 +195,7 @@ export default {
         if (v) {
           this.$props.rule.source_ip_cidr = [];
         } else {
-          this.srcIPKeys.forEach((k) => delete this.$props.rule[k]);
+          for (const k of this.srcIPKeys) delete this.$props.rule[k];
         }
         this.srcIPOption = "source_ip_cidr";
       },
@@ -226,7 +208,7 @@ export default {
         if (v) {
           this.$props.rule.source_port = [];
         } else {
-          this.srcPortKeys.forEach((k) => delete this.$props.rule[k]);
+          for (const k of this.srcPortKeys) delete this.$props.rule[k];
         }
         this.srcPortOption = "source_port";
       },
@@ -289,7 +271,7 @@ export default {
       },
       set(v: string) {
         if (!v.endsWith(",")) {
-          this.$props.rule.port = v.length > 0 ? v.split(",").map((str) => parseInt(str, 10)) : [];
+          this.$props.rule.port = v.length > 0 ? v.split(",").map((str) => Number.parseInt(str, 10)) : [];
         }
       },
     },
@@ -315,7 +297,7 @@ export default {
       },
       set(v: string) {
         if (!v.endsWith(",")) {
-          this.$props.rule.source_port = v.length > 0 ? v.split(",").map((str) => parseInt(str, 10)) : [];
+          this.$props.rule.source_port = v.length > 0 ? v.split(",").map((str) => Number.parseInt(str, 10)) : [];
         }
       },
     },
@@ -346,6 +328,24 @@ export default {
       const enabledOption = this.srcPortKeys.filter((k) => ruleKeys.includes(k));
       this.srcPortOption = enabledOption.length > 0 ? enabledOption[0] : "source_port";
     }
+  },
+  methods: {
+    updateDomainOption(option: string) {
+      for (const k of this.domainKeys) delete this.$props.rule[k];
+      this.$props.rule[option] = [];
+    },
+    updatePortOption(option: string) {
+      for (const k of this.portKeys) delete this.$props.rule[k];
+      this.$props.rule[option] = [];
+    },
+    updateSrcIPOption(option: string) {
+      for (const k of this.srcIPKeys) delete this.$props.rule[k];
+      this.$props.rule[option] = option == "source_ip_is_private" ? false : [];
+    },
+    updateSrcPortOption(option: string) {
+      for (const k of this.srcPortKeys) delete this.$props.rule[k];
+      this.$props.rule[option] = [];
+    },
   },
 };
 </script>

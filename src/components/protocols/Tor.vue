@@ -10,7 +10,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field v-model="extra_args" :label="$t('types.tor.extArgs') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+        <v-text-field v-model="extra_args" :label="`${$t('types.tor.extArgs')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <div class="v-card-subtitle" style="margin: 10px">
@@ -19,14 +19,14 @@
     </div>
     <v-row v-for="(torrc, index) in torrc_options">
       <v-col cols="auto" align-self="center" justify-self="center">
-        <v-icon @click="del_torrc_option(index)" color="error" icon="mdi-delete" />
+        <v-icon color="error" icon="mdi-delete" @click="del_torrc_option(index)" />
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('objects.key')" hide-details @input="update_key(index, $event.target.value)" v-model="torrc.name">
+        <v-text-field v-model="torrc.name" :label="$t('objects.key')" hide-details @input="update_key(index, $event.target.value)">
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('objects.value')" hide-details @input="update_value(index, $event.target.value)" v-model="torrc.value">
+        <v-text-field v-model="torrc.value" :label="$t('objects.value')" hide-details @input="update_value(index, $event.target.value)">
         </v-text-field>
       </v-col>
     </v-row>
@@ -43,45 +43,25 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    add_torrc_option() {
-      this.torrc_options = [...this.torrc_options, { name: "", value: "" }];
-    },
-    del_torrc_option(i: number) {
-      let h = this.torrc_options;
-      h.splice(i, 1);
-      this.torrc_options = h;
-    },
-    update_key(i: number, k: string) {
-      let h = this.torrc_options;
-      h[i].name = k;
-      this.torrc_options = h;
-    },
-    update_value(i: number, v: string) {
-      let h = this.torrc_options;
-      h[i].value = v;
-      this.torrc_options = h;
-    },
-  },
   computed: {
     torrc_options: {
       get(): torrc_option[] {
-        let options: torrc_option[] = [];
+        const options: torrc_option[] = [];
         const h = this.$props.data.torrc;
         if (h) {
-          Object.keys(h).forEach((key) => {
+          for (const key of Object.keys(h)) {
             if (Array.isArray(h[key])) {
               h[key].forEach((v: string) => options.push({ name: key, value: v }));
             } else {
               options.push({ name: key, value: h[key] });
             }
-          });
+          }
         }
         return options;
       },
       set(v: torrc_option[]) {
         if (v.length > 0) {
-          let torrc: any = {};
+          const torrc: any = {};
           v.forEach((h: torrc_option) => {
             if (torrc[h.name]) {
               if (Array.isArray(torrc[h.name])) {
@@ -106,6 +86,26 @@ export default {
       set(v: string) {
         this.$props.data.extra_args = v.length > 0 ? v.split(",") : undefined;
       },
+    },
+  },
+  methods: {
+    add_torrc_option() {
+      this.torrc_options = [...this.torrc_options, { name: "", value: "" }];
+    },
+    del_torrc_option(i: number) {
+      const h = this.torrc_options;
+      h.splice(i, 1);
+      this.torrc_options = h;
+    },
+    update_key(i: number, k: string) {
+      const h = this.torrc_options;
+      h[i].name = k;
+      this.torrc_options = h;
+    },
+    update_value(i: number, v: string) {
+      const h = this.torrc_options;
+      h[i].value = v;
+      this.torrc_options = h;
     },
   },
 };

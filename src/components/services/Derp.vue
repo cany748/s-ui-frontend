@@ -2,23 +2,23 @@
   <v-card subtitle="DERP">
     <v-row>
       <v-col cols="12" sm="8">
-        <v-text-field :label="$t('types.derp.configPath')" hide-details v-model="data.config_path"> </v-text-field>
+        <v-text-field v-model="data.config_path" :label="$t('types.derp.configPath')" hide-details> </v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionHome">
       <v-col cols="12" sm="8">
-        <v-text-field :label="$t('pages.home')" hide-details placeholder="blank | http[s]://example.com:port/path" v-model="data.home">
+        <v-text-field v-model="data.home" :label="$t('pages.home')" hide-details placeholder="blank | http[s]://example.com:port/path">
         </v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionVerifyCE">
       <v-col cols="12" sm="8">
         <v-select
+          v-model="data.verify_client_endpoint"
           :label="$t('types.derp.verifyClientEndpoint')"
           hide-details
           :items="tsTags"
           multiple
-          v-model="data.verify_client_endpoint"
         >
         </v-select>
       </v-col>
@@ -37,10 +37,10 @@
       <v-card v-for="(clientUrl, index) in data.verify_client_url" :key="index" class="border" style="padding: 8px" rounded="xl">
         <v-row>
           <v-col cols="auto" align-self="center" justify-self="center">
-            <v-icon @click="data.verify_client_url.splice(index, 1)" color="error" icon="mdi-delete" />
+            <v-icon color="error" icon="mdi-delete" @click="data.verify_client_url.splice(index, 1)" />
           </v-col>
           <v-col cols="11">
-            <v-text-field :label="$t('types.derp.verifyClientUrl')" hide-details v-model="clientUrl.url"> </v-text-field>
+            <v-text-field v-model="clientUrl.url" :label="$t('types.derp.verifyClientUrl')" hide-details> </v-text-field>
             <Dial :dial="clientUrl" />
           </v-col>
         </v-row>
@@ -60,18 +60,18 @@
       <v-card v-for="(mesh, index) in data.mesh_with" :key="index" class="border" style="padding: 8px" rounded="xl">
         <v-row>
           <v-col cols="auto" align-self="center" justify-self="center">
-            <v-icon @click="data.mesh_with.splice(index, 1)" color="error" icon="mdi-delete" />
+            <v-icon color="error" icon="mdi-delete" @click="data.mesh_with.splice(index, 1)" />
           </v-col>
           <v-col cols="11">
             <v-row>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field :label="$t('out.addr')" hide-details v-model="mesh.server"> </v-text-field>
+                <v-text-field v-model="mesh.server" :label="$t('out.addr')" hide-details> </v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field :label="$t('out.port')" hide-details type="number" v-model.number="mesh.server_port"> </v-text-field>
+                <v-text-field v-model.number="mesh.server_port" :label="$t('out.port')" hide-details type="number"> </v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field :label="$t('transport.host')" hide-details v-model="mesh.host"> </v-text-field>
+                <v-text-field v-model="mesh.host" :label="$t('transport.host')" hide-details> </v-text-field>
               </v-col>
             </v-row>
             <Dial :dial="mesh" />
@@ -89,24 +89,24 @@
       </v-row>
       <v-row v-if="usePskText == 1">
         <v-col cols="12">
-          <v-text-field :label="$t('types.derp.meshPskFile')" hide-details v-model="data.mesh_psk_file"> </v-text-field>
+          <v-text-field v-model="data.mesh_psk_file" :label="$t('types.derp.meshPskFile')" hide-details> </v-text-field>
         </v-col>
       </v-row>
       <v-row v-else>
         <v-col cols="12">
-          <v-text-field :label="$t('types.derp.meshPsk')" hide-details v-model="data.mesh_psk"> </v-text-field>
+          <v-text-field v-model="data.mesh_psk" :label="$t('types.derp.meshPsk')" hide-details> </v-text-field>
         </v-col>
       </v-row>
     </template>
     <template v-if="optionStun">
       <v-card :title="$t('types.derp.stun')" class="border" style="padding: 8px" rounded="xl">
-        <Listen :data="data.stun" :inTags="inTags" />
+        <Listen :data="data.stun" :in-tags="inTags" />
       </v-card>
     </template>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.derp.options") }}</v-btn>
         </template>
         <v-card>
@@ -134,10 +134,12 @@
 </template>
 
 <script lang="ts">
-import Dial from "@/components/Dial.vue";
 import OutTLS from "../tls/OutTLS.vue";
 import Listen from "../Listen.vue";
+import Dial from "@/components/Dial.vue";
+
 export default {
+  components: { Dial, Listen, OutTLS },
   props: ["data", "tsTags", "inTags"],
   data() {
     return {
@@ -195,6 +197,5 @@ export default {
       },
     },
   },
-  components: { Dial, Listen, OutTLS },
 };
 </script>

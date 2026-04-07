@@ -5,8 +5,8 @@
         v-model="privateKey"
         :label="$t('types.wg.privKey')"
         append-icon="mdi-key-star"
-        @click:append="refreshKey"
         hide-details
+        @click:append="refreshKey"
       ></v-text-field>
     </v-col>
     <v-col cols="12" sm="8">
@@ -18,21 +18,21 @@
   </v-row>
   <v-row>
     <v-col cols="12" sm="6" md="4">
-      <v-text-field :label="$t('out.addr')" hide-details v-model="address"> </v-text-field>
+      <v-text-field v-model="address" :label="$t('out.addr')" hide-details> </v-text-field>
     </v-col>
     <v-col cols="12" sm="6" md="4">
-      <v-text-field :label="$t('out.port')" type="number" min="0" hide-details v-model.number="port"> </v-text-field>
+      <v-text-field v-model.number="port" :label="$t('out.port')" type="number" min="0" hide-details> </v-text-field>
     </v-col>
     <v-col cols="12" sm="6" md="4">
-      <v-text-field label="KeepAlive" type="number" min="0" :suffix="$t('date.s')" hide-details v-model.number="keepAlive"> </v-text-field>
+      <v-text-field v-model.number="keepAlive" label="KeepAlive" type="number" min="0" :suffix="$t('date.s')" hide-details> </v-text-field>
     </v-col>
   </v-row>
   <v-row>
     <v-col cols="12" sm="6">
-      <v-text-field v-model="allowed_ips" :label="$t('types.wg.allowedIp') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+      <v-text-field v-model="allowed_ips" :label="`${$t('types.wg.allowedIp')} ${$t('commaSeparated')}`" hide-details></v-text-field>
     </v-col>
     <v-col cols="12" sm="6">
-      <v-text-field v-model="reserved" :label="'Reserved ' + $t('commaSeparated')" hide-details></v-text-field>
+      <v-text-field v-model="reserved" :label="`Reserved ${$t('commaSeparated')}`" hide-details></v-text-field>
     </v-col>
   </v-row>
 </template>
@@ -43,11 +43,6 @@ export default {
   emits: ["refreshPeerKey"],
   data() {
     return {};
-  },
-  methods: {
-    refreshKey() {
-      this.$emit("refreshPeerKey");
-    },
   },
   computed: {
     allowed_ips: {
@@ -64,7 +59,7 @@ export default {
       },
       set(v: string) {
         if (!v.endsWith(",")) {
-          this.$props.data.reserved = v.length > 0 ? v.split(",").map((str) => parseInt(str, 10)) : undefined;
+          this.$props.data.reserved = v.length > 0 ? v.split(",").map((str) => Number.parseInt(str, 10)) : undefined;
         }
       },
     },
@@ -111,6 +106,11 @@ export default {
         this.$props.ext.keys[indexKeys].public_key = v;
         this.$props.data.public_key = v;
       },
+    },
+  },
+  methods: {
+    refreshKey() {
+      this.$emit("refreshPeerKey");
     },
   },
 };

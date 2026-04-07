@@ -3,21 +3,21 @@
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-select
+          v-model="data.method"
           hide-details
           :label="$t('in.ssMethod')"
           :items="ssMethods"
           @update:model-value="direction == 'in' ? changeMethod($event) : undefined"
-          v-model="data.method"
         >
         </v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <Network :data="data" />
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="direction == 'out'">
+      <v-col v-if="direction == 'out'" cols="12" sm="6" md="4">
         <UoT :data="data" />
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="direction == 'in'">
+      <v-col v-if="direction == 'in'" cols="12" sm="6" md="4">
         <v-switch v-model="data.managed" color="primary" :label="$t('in.ssManageable')" hide-details> </v-switch>
       </v-col>
     </v-row>
@@ -42,6 +42,7 @@ import UoT from "@/components/UoT.vue";
 import RandomUtil from "@/plugins/randomUtil";
 
 export default {
+  components: { Network, UoT },
   props: ["direction", "data"],
   data() {
     return {
@@ -70,6 +71,5 @@ export default {
       }
     },
   },
-  components: { Network, UoT },
 };
 </script>

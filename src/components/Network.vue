@@ -1,5 +1,5 @@
 <template>
-  <v-select hide-details :label="$t('network')" :items="networks" v-model="Network"> </v-select>
+  <v-select v-model="Network" hide-details :label="$t('network')" :items="networks"> </v-select>
 </template>
 
 <script lang="ts">
@@ -20,7 +20,7 @@ export default {
         return this.$props.data.network ?? "";
       },
       set(v: string) {
-        this.$props.data.network = v != "" ? v : undefined;
+        this.$props.data.network = v == "" ? undefined : v;
       },
     },
   },

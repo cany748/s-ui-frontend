@@ -2,12 +2,12 @@
   <v-card :subtitle="$t('pages.clients')">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-select v-model="data.model" :items="initUsersModels" @update:model-value="data.values = []" hide-details></v-select>
+        <v-select v-model="data.model" :items="initUsersModels" hide-details @update:model-value="data.values = []"></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.model == 'group'">
+      <v-col v-if="data.model == 'group'" cols="12" sm="6" md="4">
         <v-select v-model="data.values" multiple chips :items="groupNames" :label="$t('client.group')" hide-details></v-select>
       </v-col>
-      <v-col cols="12" sm="8" v-if="data.model == 'client'">
+      <v-col v-if="data.model == 'client'" cols="12" sm="8">
         <v-select v-model="data.values" multiple chips :items="clientNames" :label="$t('pages.clients')" hide-details></v-select>
       </v-col>
     </v-row>
@@ -36,7 +36,7 @@ export default {
       });
     },
     groupNames() {
-      return Array.from(new Set(this.$props.clients.map((c: any) => c.group)));
+      return [...new Set(this.$props.clients.map((c: any) => c.group))];
     },
   },
 };

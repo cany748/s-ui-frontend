@@ -1,4 +1,4 @@
-import { Dial } from "./dial";
+import type { Dial } from "./dial";
 
 export const EpTypes = {
   Wireguard: "wireguard",
@@ -77,6 +77,6 @@ const defaultValues: Record<EpType, Endpoint> = {
 };
 
 export function createEndpoint<T extends Endpoint>(type: string, json?: Partial<T>): Endpoint {
-  const defaultObject: Endpoint = { ...defaultValues[type], ...(json || {}) };
+  const defaultObject: Endpoint = { ...defaultValues[type], ...json };
   return defaultObject;
 }

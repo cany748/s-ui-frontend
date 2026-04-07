@@ -15,10 +15,10 @@
 import Network from "@/components/Network.vue";
 
 export default {
+  components: { Network },
   props: ["data"],
   data() {
     return {};
   },
-  components: { Network },
 };
 </script>

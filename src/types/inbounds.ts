@@ -1,7 +1,7 @@
-import { iMultiplex } from "./multiplex";
-import { iTls } from "./tls";
-import { Dial } from "./dial";
-import { Transport } from "./transport";
+import type { iMultiplex } from "./multiplex";
+import type { iTls } from "./tls";
+import type { Dial } from "./dial";
+import type { Transport } from "./transport";
 
 export const InTypes = {
   Direct: "direct",
@@ -207,20 +207,20 @@ export type Inbound = InterfaceMap[keyof InterfaceMap];
 
 // Create defaultValues object dynamically
 const defaultValues: Record<InType, Inbound> = {
-  direct: <Direct>{ type: InTypes.Direct },
-  mixed: <Mixed>{ type: InTypes.Mixed },
-  socks: <SOCKS>{ type: InTypes.SOCKS },
-  http: <HTTP>{ type: InTypes.HTTP, tls_id: 0 },
-  shadowsocks: <Shadowsocks>{ type: InTypes.Shadowsocks, method: "none" },
-  vmess: <VMess>{ type: InTypes.VMess, tls_id: 0, transport: {} },
-  trojan: <Trojan>{ type: InTypes.Trojan, tls_id: 0, transport: {} },
-  naive: <Naive>{ type: InTypes.Naive, tls_id: 0 },
-  hysteria: <Hysteria>{ type: InTypes.Hysteria, up_mbps: 100, down_mbps: 100, tls_id: 0 },
-  shadowtls: <ShadowTLS>{ type: InTypes.ShadowTLS, version: 3, handshake: {}, handshake_for_server_name: {} },
-  tuic: <TUIC>{ type: InTypes.TUIC, congestion_control: "cubic", tls_id: 0 },
-  hysteria2: <Hysteria2>{ type: InTypes.Hysteria2, tls_id: 0 },
-  vless: <VLESS>{ type: InTypes.VLESS, tls_id: 0, transport: {} },
-  anytls: <AnyTls>{
+  direct: { type: InTypes.Direct } as Direct,
+  mixed: { type: InTypes.Mixed } as Mixed,
+  socks: { type: InTypes.SOCKS } as SOCKS,
+  http: { type: InTypes.HTTP, tls_id: 0 } as HTTP,
+  shadowsocks: { type: InTypes.Shadowsocks, method: "none" } as Shadowsocks,
+  vmess: { type: InTypes.VMess, tls_id: 0, transport: {} } as VMess,
+  trojan: { type: InTypes.Trojan, tls_id: 0, transport: {} } as Trojan,
+  naive: { type: InTypes.Naive, tls_id: 0 } as Naive,
+  hysteria: { type: InTypes.Hysteria, up_mbps: 100, down_mbps: 100, tls_id: 0 } as Hysteria,
+  shadowtls: { type: InTypes.ShadowTLS, version: 3, handshake: {}, handshake_for_server_name: {} } as ShadowTLS,
+  tuic: { type: InTypes.TUIC, congestion_control: "cubic", tls_id: 0 } as TUIC,
+  hysteria2: { type: InTypes.Hysteria2, tls_id: 0 } as Hysteria2,
+  vless: { type: InTypes.VLESS, tls_id: 0, transport: {} } as VLESS,
+  anytls: {
     type: InTypes.AnyTls,
     tls_id: 0,
     padding_scheme: [
@@ -234,13 +234,13 @@ const defaultValues: Record<InType, Inbound> = {
       "6=500-1000",
       "7=500-1000",
     ],
-  },
-  tun: <Tun>{ type: InTypes.Tun, mtu: 9000, stack: "system", udp_timeout: "5m", auto_route: false },
-  redirect: <Redirect>{ type: InTypes.Redirect },
-  tproxy: <TProxy>{ type: InTypes.TProxy },
+  } as AnyTls,
+  tun: { type: InTypes.Tun, mtu: 9000, stack: "system", udp_timeout: "5m", auto_route: false } as Tun,
+  redirect: { type: InTypes.Redirect } as Redirect,
+  tproxy: { type: InTypes.TProxy } as TProxy,
 };
 
 export function createInbound<T extends Inbound>(type: InType, json?: Partial<T>): Inbound {
-  const defaultObject: Inbound = { ...(defaultValues[type] ?? {}), ...(json ?? {}) };
+  const defaultObject: Inbound = { ...defaultValues[type], ...json };
   return defaultObject;
 }

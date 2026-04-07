@@ -1,21 +1,21 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6" md="4">
-      <v-text-field :label="$t('out.addr')" hide-details required v-model="addr.server"> </v-text-field>
+      <v-text-field v-model="addr.server" :label="$t('out.addr')" hide-details required> </v-text-field>
     </v-col>
     <v-col cols="12" sm="6" md="4">
-      <v-text-field :label="$t('out.port')" hide-details type="number" required v-model.number="addr.server_port"></v-text-field>
+      <v-text-field v-model.number="addr.server_port" :label="$t('out.port')" hide-details type="number" required></v-text-field>
     </v-col>
-    <v-col cols="12" sm="6" md="4" v-if="optionRemark">
-      <v-text-field :label="$t('in.remark')" hide-details v-model="addr.remark"> </v-text-field>
+    <v-col v-if="optionRemark" cols="12" sm="6" md="4">
+      <v-text-field v-model="addr.remark" :label="$t('in.remark')" hide-details> </v-text-field>
     </v-col>
   </v-row>
-  <OutTLS :outbound="addr" v-if="optionTLS" />
+  <OutTLS v-if="optionTLS" :outbound="addr" />
   <v-row>
     <v-spacer></v-spacer>
     <v-col cols="auto" align="end" justify="center">
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("in.mdOption") }}</v-btn>
         </template>
         <v-card>
@@ -35,7 +35,11 @@
 
 <script lang="ts">
 import OutTLS from "@/components/tls/OutTLS.vue";
+
 export default {
+  components: {
+    OutTLS,
+  },
   props: ["addr", "hasTls"],
   data() {
     return {
@@ -59,9 +63,6 @@ export default {
         this.$props.addr.remark = v ? "" : undefined;
       },
     },
-  },
-  components: {
-    OutTLS,
   },
 };
 </script>

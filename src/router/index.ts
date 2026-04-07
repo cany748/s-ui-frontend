@@ -102,13 +102,13 @@ router.beforeEach((to) => {
   }
 
   // Load default data
-  if (to.path !== "/login") {
-    loadDataInterval();
-  } else {
+  if (to.path === "/login") {
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = undefined;
     }
+  } else {
+    loadDataInterval();
   }
 });
 
@@ -117,7 +117,7 @@ const loadDataInterval = () => {
   Data().loadData();
   intervalId = setInterval(() => {
     Data().loadData();
-  }, 10000);
+  }, 10_000);
 };
 
 export default router;

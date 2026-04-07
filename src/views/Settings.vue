@@ -9,12 +9,12 @@
     <v-card-text>
       <v-row align="center" justify="center" style="margin-bottom: 10px">
         <v-col cols="auto">
-          <v-btn color="primary" @click="save" :loading="loading" :disabled="!stateChange">
+          <v-btn color="primary" :loading="loading" :disabled="!stateChange" @click="save">
             {{ $t("actions.save") }}
           </v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn variant="outlined" color="warning" @click="restartApp" :loading="loading" :disabled="stateChange">
+          <v-btn variant="outlined" color="warning" :loading="loading" :disabled="stateChange" @click="restartApp">
             {{ $t("actions.restartApp") }}
           </v-btn>
         </v-col>
@@ -45,8 +45,8 @@
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-                type="number"
                 v-model.number="sessionMaxAge"
+                type="number"
                 min="0"
                 :label="$t('setting.sessionAge')"
                 :suffix="$t('date.m')"
@@ -55,8 +55,8 @@
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field
-                type="number"
                 v-model.number="trafficAge"
+                type="number"
                 min="0"
                 :label="$t('setting.trafficAge')"
                 :suffix="$t('date.d')"
@@ -72,10 +72,10 @@
         <v-window-item value="t2">
           <v-row>
             <v-col cols="12" sm="6" md="4">
-              <v-switch color="primary" v-model="subEncode" :label="$t('setting.subEncode')" hide-details />
+              <v-switch v-model="subEncode" color="primary" :label="$t('setting.subEncode')" hide-details />
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-switch color="primary" v-model="subShowInfo" :label="$t('setting.subInfo')" hide-details />
+              <v-switch v-model="subShowInfo" color="primary" :label="$t('setting.subInfo')" hide-details />
             </v-col>
           </v-row>
           <v-row>
@@ -83,7 +83,7 @@
               <v-text-field v-model="settings.subListen" :label="$t('setting.addr')" hide-details></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field type="number" v-model.number="subPort" min="1" :label="$t('setting.port')" hide-details></v-text-field>
+              <v-text-field v-model.number="subPort" type="number" min="1" :label="$t('setting.port')" hide-details></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -104,7 +104,7 @@
           </v-row>
           <v-row>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field type="number" v-model.number="subUpdates" min="0" :label="$t('setting.update')" hide-details></v-text-field>
+              <v-text-field v-model.number="subUpdates" type="number" min="0" :label="$t('setting.update')" hide-details></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="settings.subURI" :label="$t('setting.subUri')" hide-details></v-text-field>
@@ -125,13 +125,14 @@
 </template>
 
 <script lang="ts" setup>
+import { type Ref, computed, inject, onMounted, ref } from "vue";
+import { push } from "notivue";
 import { i18n } from "@/locales";
-import { Ref, computed, inject, onMounted, ref } from "vue";
 import HttpUtils from "@/plugins/httputil";
 import { FindDiff } from "@/plugins/utils";
 import SubJsonExtVue from "@/components/SubJsonExt.vue";
 import SubClashExtVue from "@/components/SubClashExt.vue";
-import { push } from "notivue";
+
 const tab = ref("t1");
 const loading: Ref = inject("loading") ?? ref(false);
 const oldSettings = ref({});
@@ -188,7 +189,7 @@ const save = async () => {
     push.success({
       title: i18n.global.t("success"),
       duration: 5000,
-      message: i18n.global.t("actions.set") + " " + i18n.global.t("pages.settings"),
+      message: `${i18n.global.t("actions.set")} ${i18n.global.t("pages.settings")}`,
     });
     setData(msg.obj.settings);
   }
@@ -213,16 +214,12 @@ const restartApp = async () => {
 };
 
 const buildURL = (host: string, port: string, isTLS: boolean, path: string) => {
-  if (!host || host.length == 0) host = window.location.hostname;
-  if (!port || port.length == 0) port = window.location.port;
+  if (!host || host.length === 0) host = window.location.hostname;
+  if (!port || port.length === 0) port = window.location.port;
 
   const protocol = isTLS ? "https:" : "http:";
 
-  if (port === "" || (isTLS && port === "443") || (!isTLS && port === "80")) {
-    port = "";
-  } else {
-    port = `:${port}`;
-  }
+  port = port === "" || (isTLS && port === "443") || (!isTLS && port === "80") ? "" : `:${port}`;
 
   return `${protocol}//${host}${port}${path}settings`;
 };
@@ -247,7 +244,7 @@ const subShowInfo = computed({
 
 const webPort = computed({
   get: () => {
-    return settings.value.webPort.length > 0 ? parseInt(settings.value.webPort) : 2095;
+    return settings.value.webPort.length > 0 ? Number.parseInt(settings.value.webPort) : 2095;
   },
   set: (v: number) => {
     settings.value.webPort = v > 0 ? v.toString() : "2095";
@@ -256,7 +253,7 @@ const webPort = computed({
 
 const sessionMaxAge = computed({
   get: () => {
-    return settings.value.sessionMaxAge.length > 0 ? parseInt(settings.value.sessionMaxAge) : 0;
+    return settings.value.sessionMaxAge.length > 0 ? Number.parseInt(settings.value.sessionMaxAge) : 0;
   },
   set: (v: number) => {
     settings.value.sessionMaxAge = v > 0 ? v.toString() : "0";
@@ -265,7 +262,7 @@ const sessionMaxAge = computed({
 
 const trafficAge = computed({
   get: () => {
-    return settings.value.trafficAge.length > 0 ? parseInt(settings.value.trafficAge) : 0;
+    return settings.value.trafficAge.length > 0 ? Number.parseInt(settings.value.trafficAge) : 0;
   },
   set: (v: number) => {
     settings.value.trafficAge = v > 0 ? v.toString() : "0";
@@ -274,7 +271,7 @@ const trafficAge = computed({
 
 const subPort = computed({
   get: () => {
-    return settings.value.subPort.length > 0 ? parseInt(settings.value.subPort) : 2096;
+    return settings.value.subPort.length > 0 ? Number.parseInt(settings.value.subPort) : 2096;
   },
   set: (v: number) => {
     settings.value.subPort = v > 0 ? v.toString() : "2096";
@@ -283,7 +280,7 @@ const subPort = computed({
 
 const subUpdates = computed({
   get: () => {
-    return settings.value.subUpdates.length > 0 ? parseInt(settings.value.subUpdates) : 12;
+    return settings.value.subUpdates.length > 0 ? Number.parseInt(settings.value.subUpdates) : 12;
   },
   set: (v: number) => {
     settings.value.subUpdates = v > 0 ? v.toString() : "12";

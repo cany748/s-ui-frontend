@@ -9,7 +9,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/styles/main.css";
 
 import colors from "vuetify/util/colors";
-import { fa, en, vi, zhHans, zhHant, ru } from "vuetify/locale";
+import { en, fa, ru, vi, zhHans, zhHant } from "vuetify/locale";
 
 // Composables
 import { createVuetify } from "vuetify";

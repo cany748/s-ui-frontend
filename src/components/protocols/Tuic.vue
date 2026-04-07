@@ -12,42 +12,42 @@
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-select
+          v-model="data.udp_relay_mode"
           hide-details
           label="UDP Relay Mode"
           :items="['native', 'quic']"
           clearable
           @click:clear="delete data.udp_relay_mode"
-          v-model="data.udp_relay_mode"
         >
         </v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" label="UDP Over Stream" v-model="data.udp_over_stream" hide-details></v-switch>
+        <v-switch v-model="data.udp_over_stream" color="primary" label="UDP Over Stream" hide-details></v-switch>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :label="$t('types.tuic.congControl')" :items="congestion_controls" v-model="data.congestion_control">
+        <v-select v-model="data.congestion_control" hide-details :label="$t('types.tuic.congControl')" :items="congestion_controls">
         </v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" label="Zero-RTT Handshake" v-model="data.zero_rtt_handshake" hide-details></v-switch>
+        <v-switch v-model="data.zero_rtt_handshake" color="primary" label="Zero-RTT Handshake" hide-details></v-switch>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="direction == 'in'">
+      <v-col v-if="direction == 'in'" cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="auth_timeout"
           :label="$t('types.tuic.authTimeout')"
           hide-details
           type="number"
           :suffix="$t('date.s')"
           min="1"
-          v-model.number="auth_timeout"
         >
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.tuic.hb')" hide-details type="number" :suffix="$t('date.s')" min="1" v-model.number="heartbeat">
+        <v-text-field v-model.number="heartbeat" :label="$t('types.tuic.hb')" hide-details type="number" :suffix="$t('date.s')" min="1">
         </v-text-field>
       </v-col>
     </v-row>
@@ -58,6 +58,7 @@
 import Network from "@/components/Network.vue";
 
 export default {
+  components: { Network },
   props: ["direction", "data"],
   data() {
     return {
@@ -67,21 +68,20 @@ export default {
   computed: {
     auth_timeout: {
       get() {
-        return this.$props.data.auth_timeout ? parseInt(this.$props.data.auth_timeout.replace("s", "")) : "";
+        return this.$props.data.auth_timeout ? Number.parseInt(this.$props.data.auth_timeout.replace("s", "")) : "";
       },
       set(newValue: number) {
-        this.$props.data.auth_timeout = newValue ? newValue + "s" : "";
+        this.$props.data.auth_timeout = newValue ? `${newValue}s` : "";
       },
     },
     heartbeat: {
       get() {
-        return this.$props.data.heartbeat ? parseInt(this.$props.data.heartbeat.replace("s", "")) : "";
+        return this.$props.data.heartbeat ? Number.parseInt(this.$props.data.heartbeat.replace("s", "")) : "";
       },
       set(newValue: number) {
-        this.$props.data.heartbeat = newValue ? newValue + "s" : "";
+        this.$props.data.heartbeat = newValue ? `${newValue}s` : "";
       },
     },
   },
-  components: { Network },
 };
 </script>

@@ -9,13 +9,13 @@
       </v-card-subtitle>
       <v-row v-for="(header, index) in hdrs">
         <v-col cols="12" sm="6" md="4">
-          <v-text-field :label="$t('objects.key')" hide-details @input="update_key(index, $event.target.value)" v-model="header.name">
+          <v-text-field v-model="header.name" :label="$t('objects.key')" hide-details @input="update_key(index, $event.target.value)">
           </v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4">
-          <v-text-field :label="$t('objects.value')" hide-details @input="update_value(index, $event.target.value)" v-model="header.value">
-            <template v-slot:append>
-              <v-icon @click="del_header(index)" color="error" icon="mdi-delete" />
+          <v-text-field v-model="header.value" :label="$t('objects.value')" hide-details @input="update_value(index, $event.target.value)">
+            <template #append>
+              <v-icon color="error" icon="mdi-delete" @click="del_header(index)" />
             </template>
           </v-text-field>
         </v-col>
@@ -34,45 +34,25 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    add_header() {
-      this.hdrs = [...this.hdrs, { name: "Host", value: "" }];
-    },
-    del_header(i: number) {
-      let h = this.hdrs;
-      h.splice(i, 1);
-      this.hdrs = h;
-    },
-    update_key(i: number, k: string) {
-      let h = this.hdrs;
-      h[i].name = k;
-      this.hdrs = h;
-    },
-    update_value(i: number, v: string) {
-      let h = this.hdrs;
-      h[i].value = v;
-      this.hdrs = h;
-    },
-  },
   computed: {
     hdrs: {
       get(): Header[] {
-        let headers: Header[] = [];
+        const headers: Header[] = [];
         const h = this.$props.data.headers;
         if (h) {
-          Object.keys(h).forEach((key) => {
+          for (const key of Object.keys(h)) {
             if (Array.isArray(h[key])) {
               h[key].forEach((v: string) => headers.push({ name: key, value: v }));
             } else {
               headers.push({ name: key, value: h[key] });
             }
-          });
+          }
         }
         return headers;
       },
       set(v: Header[]) {
         if (v.length > 0) {
-          let headers: any = {};
+          const headers: any = {};
           v.forEach((h: Header) => {
             if (headers[h.name]) {
               if (Array.isArray(headers[h.name])) {
@@ -89,6 +69,26 @@ export default {
           this.$props.data.headers = undefined;
         }
       },
+    },
+  },
+  methods: {
+    add_header() {
+      this.hdrs = [...this.hdrs, { name: "Host", value: "" }];
+    },
+    del_header(i: number) {
+      const h = this.hdrs;
+      h.splice(i, 1);
+      this.hdrs = h;
+    },
+    update_key(i: number, k: string) {
+      const h = this.hdrs;
+      h[i].name = k;
+      this.hdrs = h;
+    },
+    update_value(i: number, v: string) {
+      const h = this.hdrs;
+      h[i].value = v;
+      this.hdrs = h;
     },
   },
 };

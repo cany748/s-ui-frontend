@@ -1,10 +1,10 @@
 <template>
   <v-dialog
     :model-value="visible"
-    @update:model-value="$emit('update:visible', $event)"
     transition="dialog-bottom-transition"
     width="90%"
     max-width="400"
+    @update:model-value="$emit('update:visible', $event)"
   >
     <v-card class="rounded-lg" :loading="loading">
       <v-card-title>
@@ -12,7 +12,7 @@
           <v-col>{{ $t("main.stats.title") }}</v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto">
-            <v-icon icon="mdi-refresh" class="me-2" @click="refresh" v-tooltip:top="$t('actions.update')" />
+            <v-icon v-tooltip:top="$t('actions.update')" icon="mdi-refresh" class="me-2" @click="refresh" />
             <v-icon icon="mdi-close" @click="$emit('update:visible', false)" />
           </v-col>
         </v-row>

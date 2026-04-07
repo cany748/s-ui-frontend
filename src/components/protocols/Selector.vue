@@ -7,9 +7,9 @@
           :items="tags"
           :label="$t('pages.outbounds')"
           multiple
-          @update:model-value="updateDefault"
           chips
           hide-details
+          @update:model-value="updateDefault"
         ></v-combobox>
       </v-col>
       <v-col cols="12" sm="6" md="4">

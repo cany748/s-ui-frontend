@@ -2,10 +2,10 @@
   <v-card subtitle="Talescale">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" v-model="data.ephemeral" :label="$t('types.ts.ephemeral')"></v-switch>
+        <v-switch v-model="data.ephemeral" color="primary" :label="$t('types.ts.ephemeral')"></v-switch>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" v-model="data.accept_routes" :label="$t('types.ts.acceptRoutes')"></v-switch>
+        <v-switch v-model="data.accept_routes" color="primary" :label="$t('types.ts.acceptRoutes')"></v-switch>
       </v-col>
     </v-row>
     <v-row v-if="optionStateDir">
@@ -24,13 +24,13 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionHostname">
+      <v-col v-if="optionHostname" cols="12" sm="6" md="4">
         <v-text-field v-model="data.hostname" :label="$t('types.ts.hostname')"></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionUdpTimeout">
+      <v-col v-if="optionUdpTimeout" cols="12" sm="6" md="4">
         <v-text-field
-          type="number"
           v-model.number="udpTimeout"
+          type="number"
           min="1"
           :suffix="$t('date.s')"
           :label="$t('types.ts.udpTimeout')"
@@ -42,7 +42,7 @@
         <v-text-field v-model="data.exit_node" :label="$t('types.ts.exitNode')"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" v-model="data.exit_node_allow_lan_access" :label="$t('types.ts.allowLanAccess')"></v-switch>
+        <v-switch v-model="data.exit_node_allow_lan_access" color="primary" :label="$t('types.ts.allowLanAccess')"></v-switch>
       </v-col>
     </v-row>
     <v-row v-if="optionRelay">
@@ -58,19 +58,19 @@
       <v-col cols="12" sm="8">
         <v-text-field
           v-model="relay_endpoints"
-          :label="$t('types.ts.relayEndpoints') + ' ' + $t('commaSeparated')"
+          :label="`${$t('types.ts.relayEndpoints')} ${$t('commaSeparated')}`"
           hide-details
         ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionSysIf">
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" v-model="data.system_interface" :label="$t('types.ts.systemInterface')"></v-switch>
+        <v-switch v-model="data.system_interface" color="primary" :label="$t('types.ts.systemInterface')"></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.system_interface">
+      <v-col v-if="data.system_interface" cols="12" sm="6" md="4">
         <v-text-field v-model="data.system_interface_name" :label="$t('types.ts.sysIfName')" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.system_interface">
+      <v-col v-if="data.system_interface" cols="12" sm="6" md="4">
         <v-text-field
           v-model.number="data.system_interface_mtu"
           type="number"
@@ -82,16 +82,16 @@
     </v-row>
     <v-row v-if="optionAdvRoutes">
       <v-col cols="12" sm="8">
-        <v-text-field v-model="advertise_routes" :label="$t('types.ts.advRoutes') + ' ' + $t('commaSeparated')"></v-text-field>
+        <v-text-field v-model="advertise_routes" :label="`${$t('types.ts.advRoutes')} ${$t('commaSeparated')}`"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-switch color="primary" v-model="data.advertise_exit_node" :label="$t('types.ts.advExitNode')"></v-switch>
+        <v-switch v-model="data.advertise_exit_node" color="primary" :label="$t('types.ts.advExitNode')"></v-switch>
       </v-col>
     </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.ts.options") }}</v-btn>
         </template>
         <v-card>
@@ -238,7 +238,7 @@ export default {
         return this.$props.data?.udp_timeout ? this.$props.data.udp_timeout.replace("s", "") : "";
       },
       set(v: number) {
-        this.$props.data.udp_timeout = v > 1 ? v + "s" : "30s";
+        this.$props.data.udp_timeout = v > 1 ? `${v}s` : "30s";
       },
     },
     advertise_routes: {

@@ -2,31 +2,31 @@
   <v-card subtitle="Hysteria">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('stats.upload')" hide-details type="number" :suffix="$t('stats.Mbps')" v-model.number="up_mbps">
+        <v-text-field v-model.number="up_mbps" :label="$t('stats.upload')" hide-details type="number" :suffix="$t('stats.Mbps')">
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="down_mbps"
           :label="$t('stats.download')"
           hide-details
           type="number"
           :suffix="$t('stats.Mbps')"
           min="0"
-          v-model.number="down_mbps"
         >
         </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('types.hy.obfs')" hide-details v-model="data.obfs"> </v-text-field>
+        <v-text-field v-model="data.obfs" :label="$t('types.hy.obfs')" hide-details> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="direction == 'out'">
-        <v-text-field :label="$t('types.hy.auth')" hide-details v-model="data.auth_str"> </v-text-field>
+      <v-col v-if="direction == 'out'" cols="12" sm="6" md="4">
+        <v-text-field v-model="data.auth_str" :label="$t('types.hy.auth')" hide-details> </v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="direction == 'out'">
+      <v-col v-if="direction == 'out'" cols="12" sm="6" md="4">
         <Network :data="data" />
       </v-col>
       <v-col cols="12" sm="6" md="4">
@@ -34,24 +34,24 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window_conn != undefined">
-        <v-text-field label="Recv window conn" hide-details type="number" min="0" v-model.number="data.recv_window_conn"> </v-text-field>
+      <v-col v-if="data.recv_window_conn != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.recv_window_conn" label="Recv window conn" hide-details type="number" min="0"> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window != undefined">
-        <v-text-field label="Recv window" hide-details type="number" min="0" v-model.number="data.recv_window"> </v-text-field>
+      <v-col v-if="data.recv_window != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.recv_window" label="Recv window" hide-details type="number" min="0"> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.recv_window_client != undefined">
-        <v-text-field label="Recv window client" hide-details type="number" min="0" v-model.number="data.recv_window_client">
+      <v-col v-if="data.recv_window_client != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.recv_window_client" label="Recv window client" hide-details type="number" min="0">
         </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.max_conn_client != undefined">
-        <v-text-field label="Max conn client" hide-details type="number" min="0" v-model.number="data.max_conn_client"> </v-text-field>
+      <v-col v-if="data.max_conn_client != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.max_conn_client" label="Max conn client" hide-details type="number" min="0"> </v-text-field>
       </v-col>
     </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.hy.hyOptions") }}</v-btn>
         </template>
         <v-card>
@@ -79,6 +79,7 @@
 import Network from "@/components/Network.vue";
 
 export default {
+  components: { Network },
   props: ["direction", "data"],
   data() {
     return {
@@ -91,7 +92,7 @@ export default {
         return this.$props.data.recv_window_conn != undefined;
       },
       set(v: boolean) {
-        this.$props.data.recv_window_conn = v ? 15728640 : undefined;
+        this.$props.data.recv_window_conn = v ? 15_728_640 : undefined;
       },
     },
     optionRsvWin: {
@@ -99,7 +100,7 @@ export default {
         return this.$props.data.recv_window != undefined;
       },
       set(v: boolean) {
-        this.$props.data.recv_window = v ? 67108864 : undefined;
+        this.$props.data.recv_window = v ? 67_108_864 : undefined;
       },
     },
     optionRsvClnt: {
@@ -107,7 +108,7 @@ export default {
         return this.$props.data.recv_window_client != undefined;
       },
       set(v: boolean) {
-        this.$props.data.recv_window_client = v ? 67108864 : undefined;
+        this.$props.data.recv_window_client = v ? 67_108_864 : undefined;
       },
     },
     optionMaxConn: {
@@ -123,9 +124,9 @@ export default {
         return this.$props.data.down_mbps ? this.$props.data.down_mbps : 0;
       },
       set(newValue: any) {
-        if (newValue.length != 0) {
+        if (newValue.length > 0) {
           this.$props.data.down_mbps = newValue;
-          this.$props.data.down = "" + newValue + " Mbps";
+          this.$props.data.down = `${newValue} Mbps`;
         } else {
           this.$props.data.down_mbps = 0;
           this.$props.data.down = "0 Mbps";
@@ -137,10 +138,9 @@ export default {
         return this.$props.data.up_mbps ? this.$props.data.up_mbps : 0;
       },
       set(newValue: number) {
-        this.$props.data.up_mbps = newValue > 0 ? newValue : 0;
+        this.$props.data.up_mbps = Math.max(newValue, 0);
       },
     },
   },
-  components: { Network },
 };
 </script>

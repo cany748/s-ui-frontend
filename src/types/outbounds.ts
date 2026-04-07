@@ -1,7 +1,7 @@
-import { oTls } from "./tls";
-import { oMultiplex } from "./multiplex";
-import { Transport } from "./transport";
-import { Dial } from "./dial";
+import type { oTls } from "./tls";
+import type { oMultiplex } from "./multiplex";
+import type { Transport } from "./transport";
+import type { Dial } from "./dial";
 
 export const OutTypes = {
   Direct: "direct",
@@ -267,6 +267,6 @@ const defaultValues: Record<OutType, Outbound> = {
 };
 
 export function createOutbound<T extends Outbound>(type: string, json?: Partial<T>): Outbound {
-  const defaultObject: Outbound = { ...defaultValues[type], ...(json || {}) };
+  const defaultObject: Outbound = { ...defaultValues[type], ...json };
   return defaultObject;
 }

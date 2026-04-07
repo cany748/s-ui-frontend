@@ -23,10 +23,10 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="resetChanges" color="error" variant="plain">{{ $t("reset") }}</v-btn>
+        <v-btn color="error" variant="plain" @click="resetChanges">{{ $t("reset") }}</v-btn>
         <v-spacer />
-        <v-btn @click="closeModal" color="primary" variant="outlined">{{ $t("actions.close") }}</v-btn>
-        <v-btn @click="saveChanges" color="primary" variant="tonal">{{ $t("actions.save") }}</v-btn>
+        <v-btn color="primary" variant="outlined" @click="closeModal">{{ $t("actions.close") }}</v-btn>
+        <v-btn color="primary" variant="tonal" @click="saveChanges">{{ $t("actions.save") }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -42,6 +42,7 @@ export default {
       localText: "",
     };
   },
+  computed: {},
   watch: {
     visible(v) {
       if (v) {
@@ -49,7 +50,6 @@ export default {
       }
     },
   },
-  computed: {},
   methods: {
     saveChanges() {
       const unique = [

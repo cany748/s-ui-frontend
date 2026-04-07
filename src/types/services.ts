@@ -1,5 +1,5 @@
-import { Listen } from "./inbounds";
-import { iTls } from "./tls";
+import type { Listen } from "./inbounds";
+import type { iTls } from "./tls";
 
 export const SrvTypes = {
   DERP: "derp",
@@ -64,14 +64,14 @@ type InterfaceMap = {
 export type Srv = InterfaceMap[keyof InterfaceMap];
 
 const defaultValues: Record<SrvType, Srv> = {
-  derp: <DERP>{ type: "derp", config_path: "", tls_id: 0 },
-  resolved: <Resolved>{ type: "resolved", listen: "::", listen_port: 53 },
-  "ssm-api": <SSMAPI>{ type: "ssm-api", tls_id: 0, servers: {} },
+  derp: { type: "derp", config_path: "", tls_id: 0 } as DERP,
+  resolved: { type: "resolved", listen: "::", listen_port: 53 } as Resolved,
+  "ssm-api": { type: "ssm-api", tls_id: 0, servers: {} } as SSMAPI,
   ocm: { type: "ocm", id: 0, tag: "", listen: "::", listen_port: 8080, tls_id: 0, users: [] } as OCM,
   ccm: { type: "ccm", id: 0, tag: "", listen: "::", listen_port: 8080, tls_id: 0, users: [] } as CCM,
 };
 
 export function createSrv<T extends Srv>(type: string, json?: Partial<T>): Srv {
-  const defaultObject: Srv = { ...defaultValues[type], ...(json || {}) };
+  const defaultObject: Srv = { ...defaultValues[type], ...json };
   return defaultObject;
 }

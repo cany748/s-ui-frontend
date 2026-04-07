@@ -1,4 +1,4 @@
-import { Dial } from "./dial";
+import type { Dial } from "./dial";
 
 export interface tls {
   id: number;

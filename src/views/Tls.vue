@@ -1,12 +1,12 @@
 <template>
-  <TlsVue v-model="modal.visible" :visible="modal.visible" :id="modal.id" :data="modal.data" @close="closeModal" @save="saveModal" />
+  <TlsVue :id="modal.id" v-model="modal.visible" :visible="modal.visible" :data="modal.data" @close="closeModal" @save="saveModal" />
   <v-row>
     <v-col cols="12" justify="center" align="center">
       <v-btn color="primary" @click="showModal(0)">{{ $t("actions.add") }}</v-btn>
     </v-col>
   </v-row>
   <v-row>
-    <v-col cols="12" sm="4" md="3" lg="2" v-for="(item, index) in <any[]>tlsConfigs" :key="item.id">
+    <v-col v-for="(item, index) in <any[]>tlsConfigs" :key="item.id" cols="12" sm="4" md="3" lg="2">
       <v-card rounded="xl" elevation="5" min-width="200" :title="item.name">
         <v-card-subtitle style="margin-top: -15px">
           {{ item.server?.server_name?.length > 0 ? item.server.server_name : "-" }}
@@ -50,7 +50,7 @@
             <v-tooltip activator="parent" location="top" :text="$t('actions.edit')"></v-tooltip>
           </v-btn>
           <v-btn
-            v-if="tlsInbounds(item.id).length == 0"
+            v-if="tlsInbounds(item.id).length === 0"
             icon="mdi-file-remove"
             style="margin-inline-start: 0"
             color="warning"
@@ -80,11 +80,11 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, ref } from "vue";
 import TlsVue from "@/layouts/modals/Tls.vue";
 import Data from "@/store/modules/data";
-import { computed, ref } from "vue";
-import { Inbound } from "@/types/inbounds";
-import { tls } from "@/types/tls";
+import type { Inbound } from "@/types/inbounds";
+import type { tls } from "@/types/tls";
 
 const tlsConfigs = computed((): any[] => {
   return Data().tlsConfigs;
@@ -104,7 +104,7 @@ const modal = ref({
   data: "",
 });
 
-const delOverlay = ref(new Array<boolean>(tlsConfigs.value.length).fill(false));
+const delOverlay = ref(Array.from({ length: tlsConfigs.value.length }).fill(false));
 
 const showModal = (id: number) => {
   modal.value.id = id;
@@ -112,9 +112,9 @@ const showModal = (id: number) => {
   modal.value.visible = true;
 };
 const clone = (obj: any) => {
-  let data = JSON.parse(JSON.stringify(obj));
+  const data = JSON.parse(JSON.stringify(obj));
   data.id = 0;
-  while (tlsConfigs.value.findIndex((t) => t.name == data.name) != -1) {
+  while (tlsConfigs.value.some((t) => t.name == data.name)) {
     data.name += "-copy";
   }
   saveModal(data);

@@ -67,7 +67,7 @@
         <v-btn color="primary" variant="outlined" @click="closeModal">
           {{ $t("actions.close") }}
         </v-btn>
-        <v-btn color="primary" variant="tonal" :loading="loading" :disabled="selectedClients.values.length == 0" @click="saveChanges">
+        <v-btn color="primary" variant="tonal" :loading="loading" :disabled="selectedClients.values.length === 0" @click="saveChanges">
           {{ $t("actions.save") }}
         </v-btn>
       </v-card-actions>
@@ -79,12 +79,12 @@
 import Users from "@/components/Users.vue";
 import { i18n } from "@/locales";
 import Data from "@/store/modules/data";
-import { Client } from "@/types/clients";
+import type { Client } from "@/types/clients";
 
 export default {
+  components: { Users },
   props: ["visible", "clients", "inboundTags"],
   emits: ["close"],
-  components: { Users },
   data() {
     return {
       loading: false,
@@ -107,6 +107,15 @@ export default {
       },
     };
   },
+  watch: {
+    visible(newVal) {
+      if (newVal) {
+        this.actionMode = "change_limits";
+        this.editData = { enable: true, addDays: 0, addVolume: 0, inboundTags: [] };
+        this.selectedClients = { model: "none", values: [] };
+      }
+    },
+  },
   methods: {
     onActionChange() {
       this.editData.inboundTags = [];
@@ -117,21 +126,25 @@ export default {
     getTargetClients(): Client[] {
       const clients = this.clients ?? [];
       switch (this.selectedClients.model) {
-        case "all":
+        case "all": {
           return clients;
-        case "group":
+        }
+        case "group": {
           return clients.filter((c: any) => this.selectedClients.values.includes(c.group));
-        case "client":
+        }
+        case "client": {
           return clients.filter((c: any) => this.selectedClients.values.includes(c.id));
-        default:
+        }
+        default: {
           return [];
+        }
       }
     },
     async saveChanges() {
       this.loading = true;
       const targetClients = this.getTargetClients();
       switch (this.actionMode) {
-        case "change_limits":
+        case "change_limits": {
           targetClients.forEach((c: Client) => {
             if (this.editData.addVolume != 0 && c.volume > 0) c.volume += this.editData.addVolume * 1024 ** 3;
             if (this.editData.addDays != 0 && c.expiry > 0) c.expiry += this.editData.addDays * (24 * 60 * 60);
@@ -139,7 +152,8 @@ export default {
               c.enable = (c.volume == 0 || c.up + c.down < c.volume) && (c.expiry == 0 || c.expiry > Date.now() / 1000);
           });
           break;
-        case "add_inbounds":
+        }
+        case "add_inbounds": {
           targetClients.forEach((c: Client) => {
             this.editData.inboundTags.forEach((t: number) => {
               if (!c.inbounds.includes(t)) {
@@ -149,12 +163,14 @@ export default {
             c.inbounds = c.inbounds.sort();
           });
           break;
-        case "remove_inbounds":
+        }
+        case "remove_inbounds": {
           targetClients.forEach((c: Client) => {
             c.inbounds = c.inbounds.filter((i: number) => !this.editData.inboundTags.includes(i));
           });
           break;
-        case "delete_bulk":
+        }
+        case "delete_bulk": {
           const success = await Data().save(
             "clients",
             "delbulk",
@@ -163,19 +179,11 @@ export default {
           if (success) this.closeModal();
           this.loading = false;
           return;
+        }
       }
       const success = await Data().save("clients", "editbulk", targetClients);
       if (success) this.closeModal();
       this.loading = false;
-    },
-  },
-  watch: {
-    visible(newVal) {
-      if (newVal) {
-        this.actionMode = "change_limits";
-        this.editData = { enable: true, addDays: 0, addVolume: 0, inboundTags: [] };
-        this.selectedClients = { model: "none", values: [] };
-      }
     },
   },
 };

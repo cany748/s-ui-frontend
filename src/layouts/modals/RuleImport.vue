@@ -15,7 +15,7 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text style="padding: 0 16px; overflow-y: scroll">
-        <v-tabs v-model="tab" @update:modelValue="tabChanged">
+        <v-tabs v-model="tab" @update:model-value="tabChanged">
           <v-tab value="json">JSON</v-tab>
           <v-tab value="file">{{ $t("rule.import.uploadFile") }}</v-tab>
           <v-tab value="url">{{ $t("rule.import.fromUrl") }}</v-tab>
@@ -46,7 +46,7 @@
               prepend-icon="mdi-file-code"
               clearable
               @click:clear="tabChanged"
-              @update:modelValue="onFileUpload($event)"
+              @update:model-value="onFileUpload($event)"
             />
           </v-window-item>
 
@@ -111,7 +111,7 @@
             {{ $t("rule.ruleset") }}
             <v-badge v-if="parsed.rule_set?.length > 0" color="success" :content="parsed.rule_set?.length" inline />
             <span v-if="skippedRulesets > 0">
-              <v-badge color="warning" :content="skippedRulesets" inline v-tooltip:top="$t('rule.import.skipped')" />
+              <v-badge v-tooltip:top="$t('rule.import.skipped')" color="warning" :content="skippedRulesets" inline />
             </span>
           </span>
           <v-table v-if="parsed.rule_set?.length" density="compact" striped="even">
@@ -139,13 +139,13 @@
         </template>
       </v-card-text>
       <v-card-actions>
-        <v-btn v-if="tab === 'json'" @click="parseJson" variant="tonal" color="success" :disabled="rawJson.trim().length === 0">
+        <v-btn v-if="tab === 'json'" variant="tonal" color="success" :disabled="rawJson.trim().length === 0" @click="parseJson">
           {{ $t("rule.import.parse") }}
           <v-icon icon="mdi-magnify" />
         </v-btn>
         <v-spacer />
-        <v-btn @click="close" variant="text">{{ $t("actions.close") }}</v-btn>
-        <v-btn @click="save" color="primary" variant="flat" :disabled="!parsed">
+        <v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
+        <v-btn color="primary" variant="flat" :disabled="!parsed" @click="save">
           {{ $t("actions.save") }}
         </v-btn>
       </v-card-actions>
@@ -177,6 +177,11 @@ export default {
       if (!this.parsed?.rule_set) return 0;
       const existing = new Set(this.existingRulesetTags);
       return this.parsed.rule_set.filter((rs: any) => existing.has(rs.tag)).length;
+    },
+  },
+  watch: {
+    visible(v: boolean) {
+      if (v) this.reset();
     },
   },
   methods: {
@@ -212,8 +217,8 @@ export default {
           return;
         }
         this.setParsed(block);
-      } catch (e: any) {
-        this.error = this.$t("rule.import.errJsonParse", { message: e.message });
+      } catch (error: any) {
+        this.error = this.$t("rule.import.errJsonParse", { message: error.message });
       }
     },
     async fetchFromUrl() {
@@ -224,10 +229,13 @@ export default {
         const resp = await fetch(this.fetchUrl);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const block = this.extractRouteBlock(await resp.json());
-        if (!block) this.error = this.$t("rule.import.errNoArraysFetched");
-        else this.setParsed(block);
-      } catch (e: any) {
-        this.error = this.$t("rule.import.errFetch", { message: e.message });
+        if (block) {
+          this.setParsed(block);
+        } else {
+          this.error = this.$t("rule.import.errNoArraysFetched");
+        }
+      } catch (error: any) {
+        this.error = this.$t("rule.import.errFetch", { message: error.message });
       } finally {
         this.fetching = false;
       }
@@ -247,9 +255,8 @@ export default {
           return;
         }
         this.setParsed(block);
-      } catch (e: any) {
-        this.error = this.$t("rule.import.errJsonParse", { message: e.message });
-        return;
+      } catch (error: any) {
+        this.error = this.$t("rule.import.errJsonParse", { message: error.message });
       }
     },
     save() {
@@ -258,11 +265,6 @@ export default {
     },
     close() {
       this.$emit("close");
-    },
-  },
-  watch: {
-    visible(v: boolean) {
-      if (v) this.reset();
     },
   },
 };

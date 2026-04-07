@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts" setup>
+import { type Ref, inject, ref } from "vue";
 import Message from "@/components/message.vue";
-import { inject, ref, Ref } from "vue";
 
 const loading: Ref = inject("loading") ?? ref(false);
 
 // Change page title
-document.title = "S-UI " + document.location.hostname;
+document.title = `S-UI ${document.location.hostname}`;
 </script>
 
 <style>

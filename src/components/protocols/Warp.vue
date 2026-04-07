@@ -29,10 +29,10 @@
       <v-card :subtitle="$t('types.wg.peer')">
         <v-row>
           <v-col cols="12" sm="6">
-            <v-text-field :label="$t('out.addr')" hide-details v-model="data.peers[0].address"> </v-text-field>
+            <v-text-field v-model="data.peers[0].address" :label="$t('out.addr')" hide-details> </v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="4">
-            <v-text-field :label="$t('out.port')" hide-details type="number" min="1" v-model.number="data.peers[0].port"> </v-text-field>
+            <v-text-field v-model.number="data.peers[0].port" :label="$t('out.port')" hide-details type="number" min="1"> </v-text-field>
           </v-col>
         </v-row>
         <table dir="ltr" width="100%">
@@ -54,29 +54,29 @@
       </v-card>
     </template>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="data.udp_timeout != undefined">
-        <v-text-field label="UDP Timeout" hide-details type="number" min="0" :suffix="$t('date.m')" v-model.number="udp_timeout">
+      <v-col v-if="data.udp_timeout != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="udp_timeout" label="UDP Timeout" hide-details type="number" min="0" :suffix="$t('date.m')">
         </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.workers != undefined">
-        <v-text-field :label="$t('types.wg.worker')" hide-details type="number" min="1" v-model.number="data.workers"> </v-text-field>
+      <v-col v-if="data.workers != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.workers" :label="$t('types.wg.worker')" hide-details type="number" min="1"> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.mtu != undefined">
-        <v-text-field label="MTU" hide-details type="number" min="0" v-model.number="data.mtu"> </v-text-field>
+      <v-col v-if="data.mtu != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.mtu" label="MTU" hide-details type="number" min="0"> </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-switch v-model="data.system" color="primary" :label="$t('types.wg.sysIf')" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.system">
-        <v-text-field :label="$t('types.wg.ifName')" hide-details v-model="ifName"> </v-text-field>
+      <v-col v-if="data.system" cols="12" sm="6" md="4">
+        <v-text-field v-model="ifName" :label="$t('types.wg.ifName')" hide-details> </v-text-field>
       </v-col>
     </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.wg.options") }}</v-btn>
         </template>
         <v-card>
@@ -105,7 +105,6 @@ export default {
       menu: false,
     };
   },
-  methods: {},
   computed: {
     optionUdp: {
       get(): boolean {
@@ -141,12 +140,13 @@ export default {
     },
     udp_timeout: {
       get() {
-        return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
+        return this.$props.data.udp_timeout ? Number.parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
       },
       set(v: number) {
-        this.$props.data.udp_timeout = v > 0 ? v + "m" : "5m";
+        this.$props.data.udp_timeout = v > 0 ? `${v}m` : "5m";
       },
     },
   },
+  methods: {},
 };
 </script>

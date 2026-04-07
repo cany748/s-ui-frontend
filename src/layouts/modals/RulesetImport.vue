@@ -4,14 +4,14 @@
       <v-card-title>
         <v-row>
           <v-col>{{ $t("rule.import.title") }}</v-col>
-          <v-col cols="auto" v-if="importPreview.length > 0">
+          <v-col v-if="importPreview.length > 0" cols="auto">
             <v-chip size="small" color="primary" variant="tonal"> {{ $t("count") }}: {{ importPreview.length }} </v-chip>
           </v-col>
         </v-row>
       </v-card-title>
       <v-divider />
       <v-card-text style="padding: 0 16px; overflow-y: scroll">
-        <v-tabs v-model="tab" @update:modelValue="tabChanged">
+        <v-tabs v-model="tab" @update:model-value="tabChanged">
           <v-tab value="text">
             {{ $t("rule.import.pasteUrls") }}
           </v-tab>
@@ -47,16 +47,16 @@
         </v-window>
         <v-row class="mb-4">
           <v-col cols="12" sm="6" md="4">
-            <v-select hide-details :label="$t('ruleset.format')" :items="['source', 'binary']" v-model="importFormat"> </v-select>
+            <v-select v-model="importFormat" hide-details :label="$t('ruleset.format')" :items="['source', 'binary']"> </v-select>
           </v-col>
           <v-col cols="12" sm="6" md="4">
             <v-select
+              v-model="importDetour"
               hide-details
               :label="$t('objects.outbound')"
               :items="outTags"
               clearable
               @click:clear="importDetour = ''"
-              v-model="importDetour"
             >
             </v-select>
           </v-col>
@@ -77,7 +77,7 @@
           <span class="v-card-subtitle">
             {{ $t("rule.import.preview") }}
             <v-badge v-if="importPreview.length > 0" color="success" :content="importPreview.length" inline />
-            <v-badge v-if="importSkipped > 0" color="warning" :content="importSkipped" inline v-tooltip:top="$t('rule.import.skipped')" />
+            <v-badge v-if="importSkipped > 0" v-tooltip:top="$t('rule.import.skipped')" color="warning" :content="importSkipped" inline />
           </span>
           <v-table density="compact" striped="even" class="mb-4">
             <thead>
@@ -103,12 +103,12 @@
       </v-card-text>
       <v-divider />
       <v-card-actions class="pa-3">
-        <v-btn @click="parseImport" variant="tonal" :disabled="importRawText.trim().length === 0">
+        <v-btn variant="tonal" :disabled="importRawText.trim().length === 0" @click="parseImport">
           <v-icon icon="mdi-magnify" class="mr-1" />{{ $t("rule.import.parse") }}
         </v-btn>
         <v-spacer />
-        <v-btn @click="close" variant="text">{{ $t("actions.close") }}</v-btn>
-        <v-btn @click="save" color="primary" variant="flat" :disabled="newCount === 0">
+        <v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
+        <v-btn color="primary" variant="flat" :disabled="newCount === 0" @click="save">
           {{ $t("actions.save") }}
         </v-btn>
       </v-card-actions>
@@ -145,6 +145,14 @@ export default {
       return this.importPreview.filter((i) => !i.exists).length;
     },
   },
+  watch: {
+    visible(v) {
+      if (v) {
+        this.tab = "text";
+        this.tabChanged();
+      }
+    },
+  },
   methods: {
     tabChanged() {
       this.importPreview = [];
@@ -156,7 +164,7 @@ export default {
         return filename.replace(/\.[^.]+$/, "");
       } catch {
         const parts = url.split("/");
-        return parts[parts.length - 1].replace(/\.[^.]+$/, "") || url;
+        return parts.at(-1).replace(/\.[^.]+$/, "") || url;
       }
     },
     close() {
@@ -182,7 +190,7 @@ export default {
         .map((item) => {
           const rs: any = { type: "remote", tag: item.tag, format: item.format, url: item.url };
           if (this.importDetour) rs.download_detour = this.importDetour;
-          if (this.importInterval > 0) rs.update_interval = this.importInterval + "d";
+          if (this.importInterval > 0) rs.update_interval = `${this.importInterval}d`;
           return rs;
         });
       this.$emit("save", toAdd);
@@ -192,14 +200,6 @@ export default {
       if (!file) return;
       this.importRawText = await file.text();
       this.parseImport();
-    },
-  },
-  watch: {
-    visible(v) {
-      if (v) {
-        this.tab = "text";
-        this.tabChanged();
-      }
     },
   },
 };

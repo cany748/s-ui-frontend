@@ -6,8 +6,8 @@
           v-model="data.private_key"
           :label="$t('types.wg.privKey')"
           append-icon="mdi-key-star"
-          @click:append="newKey()"
           hide-details
+          @click:append="newKey()"
         >
         </v-text-field>
       </v-col>
@@ -17,49 +17,49 @@
           readonly
           :label="$t('tls.pubKey')"
           append-icon="mdi-refresh"
-          @click:append="getWgPubKey()"
           hide-details
+          @click:append="getWgPubKey()"
         >
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="8">
-        <v-text-field v-model="address" :label="$t('types.wg.localIp') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+        <v-text-field v-model="address" :label="`${$t('types.wg.localIp')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('in.port')" hide-details type="number" min="1" v-model.number="data.listen_port"> </v-text-field>
+        <v-text-field v-model.number="data.listen_port" :label="$t('in.port')" hide-details type="number" min="1"> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.udp_timeout != undefined">
-        <v-text-field label="UDP Timeout" hide-details type="number" min="0" :suffix="$t('date.m')" v-model.number="udp_timeout">
+      <v-col v-if="data.udp_timeout != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="udp_timeout" label="UDP Timeout" hide-details type="number" min="0" :suffix="$t('date.m')">
         </v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="data.workers != undefined">
-        <v-text-field :label="$t('types.wg.worker')" hide-details type="number" min="1" v-model.number="data.workers"> </v-text-field>
+      <v-col v-if="data.workers != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.workers" :label="$t('types.wg.worker')" hide-details type="number" min="1"> </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.mtu != undefined">
-        <v-text-field label="MTU" hide-details type="number" min="0" v-model.number="data.mtu"> </v-text-field>
+      <v-col v-if="data.mtu != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="data.mtu" label="MTU" hide-details type="number" min="0"> </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="8">
-        <v-text-field v-model="data.ext.dns" :label="$t('dns.title') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+        <v-text-field v-model="data.ext.dns" :label="`${$t('dns.title')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-switch v-model="data.system" color="primary" :label="$t('types.wg.sysIf')" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.system">
-        <v-text-field :label="$t('types.wg.ifName')" hide-details v-model="ifName"> </v-text-field>
+      <v-col v-if="data.system" cols="12" sm="6" md="4">
+        <v-text-field v-model="ifName" :label="$t('types.wg.ifName')" hide-details> </v-text-field>
       </v-col>
     </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.wg.options") }}</v-btn>
         </template>
         <v-card>
@@ -86,9 +86,9 @@
     <template v-for="(p, index) in data.peers">
       <v-card style="margin-top: 1rem">
         <v-card-subtitle>
-          {{ $t("types.wg.peer") + " " + (Number(index) + 1) }} <v-icon color="error" icon="mdi-delete" @click="delPeer(Number(index))" />
+          {{ `${$t("types.wg.peer")} ${Number(index) + 1}` }} <v-icon color="error" icon="mdi-delete" @click="delPeer(Number(index))" />
         </v-card-subtitle>
-        <Peer :data="p" :ext="data.ext" @refreshPeerKey="$emit('refreshPeerKey', index)" />
+        <Peer :data="p" :ext="data.ext" @refresh-peer-key="$emit('refreshPeerKey', index)" />
       </v-card>
     </template>
   </v-card>
@@ -98,31 +98,13 @@
 import Peer from "@/components/WgPeer.vue";
 
 export default {
+  components: { Peer },
   props: ["data"],
   emits: ["newWgKey", "getWgPubKey", "addPeer", "delPeer", "refreshPeerKey"],
   data() {
     return {
       menu: false,
     };
-  },
-  methods: {
-    addPeer() {
-      this.$emit("addPeer");
-    },
-    delPeer(id: number) {
-      this.$emit("delPeer", id);
-    },
-    refreshPeerKey(id: number) {
-      this.$emit("refreshPeerKey", id);
-    },
-    newKey() {
-      this.$emit("newWgKey");
-    },
-    getWgPubKey() {
-      const privKey = this.$props.data.private_key;
-      if (privKey.length == 0) return;
-      this.$emit("getWgPubKey", privKey);
-    },
   },
   computed: {
     optionUdp: {
@@ -179,16 +161,16 @@ export default {
       },
       set(v: string) {
         if (!v.endsWith(",")) {
-          this.$props.data.reserved = v.length > 0 ? v.split(",").map((str) => parseInt(str, 10)) : [];
+          this.$props.data.reserved = v.length > 0 ? v.split(",").map((str) => Number.parseInt(str, 10)) : [];
         }
       },
     },
     udp_timeout: {
       get() {
-        return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
+        return this.$props.data.udp_timeout ? Number.parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
       },
       set(v: number) {
-        this.$props.data.udp_timeout = v > 0 ? v + "m" : "5m";
+        this.$props.data.udp_timeout = v > 0 ? `${v}m` : "5m";
       },
     },
     public_key: {
@@ -200,6 +182,24 @@ export default {
       },
     },
   },
-  components: { Peer },
+  methods: {
+    addPeer() {
+      this.$emit("addPeer");
+    },
+    delPeer(id: number) {
+      this.$emit("delPeer", id);
+    },
+    refreshPeerKey(id: number) {
+      this.$emit("refreshPeerKey", id);
+    },
+    newKey() {
+      this.$emit("newWgKey");
+    },
+    getWgPubKey() {
+      const privKey = this.$props.data.private_key;
+      if (privKey.length === 0) return;
+      this.$emit("getWgPubKey", privKey);
+    },
+  },
 };
 </script>

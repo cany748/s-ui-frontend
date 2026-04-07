@@ -23,17 +23,17 @@
       </v-row>
       <v-row v-if="usePath == 0">
         <v-col cols="12" sm="6">
-          <v-text-field :label="$t('tls.keyPath')" hide-details v-model="data.private_key_path"> </v-text-field>
+          <v-text-field v-model="data.private_key_path" :label="$t('tls.keyPath')" hide-details> </v-text-field>
         </v-col>
       </v-row>
       <v-row v-else>
         <v-col cols="12" sm="6">
-          <v-textarea :label="$t('tls.key')" hide-details v-model="data.private_key"> </v-textarea>
+          <v-textarea v-model="data.private_key" :label="$t('tls.key')" hide-details> </v-textarea>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" sm="6">
-          <v-text-field :label="$t('types.ssh.passphrase')" hide-details v-model="data.private_key_passphrase"> </v-text-field>
+          <v-text-field v-model="data.private_key_passphrase" :label="$t('types.ssh.passphrase')" hide-details> </v-text-field>
         </v-col>
       </v-row>
     </template>
@@ -49,21 +49,21 @@
     </template>
     <v-row v-if="optionHostKey">
       <v-col cols="12" sm="6">
-        <v-textarea :label="$t('types.ssh.hostKey')" hide-details v-model="host_key"> </v-textarea>
+        <v-textarea v-model="host_key" :label="$t('types.ssh.hostKey')" hide-details> </v-textarea>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="data.host_key_algorithms != undefined">
-        <v-text-field v-model="algorithms" :label="$t('types.ssh.algorithm') + ' ' + $t('commaSeparated')" hide-details></v-text-field>
+      <v-col v-if="data.host_key_algorithms != undefined" cols="12" sm="6" md="4">
+        <v-text-field v-model="algorithms" :label="`${$t('types.ssh.algorithm')} ${$t('commaSeparated')}`" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="data.client_version != undefined">
+      <v-col v-if="data.client_version != undefined" cols="12" sm="6" md="4">
         <v-text-field v-model="data.client_version" :label="$t('types.ssh.clientVer')" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("types.ssh.options") }}</v-btn>
         </template>
         <v-card>

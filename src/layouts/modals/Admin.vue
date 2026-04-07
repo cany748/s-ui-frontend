@@ -2,7 +2,7 @@
   <v-dialog transition="dialog-bottom-transition" width="400">
     <v-card class="rounded-lg">
       <v-card-title>
-        {{ $t("admin.changeCred") + " " + user.username }}
+        {{ `${$t("admin.changeCred")} ${user.username}` }}
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text>
@@ -74,6 +74,13 @@ export default {
       ],
     };
   },
+  watch: {
+    visible(newValue) {
+      if (newValue) {
+        this.resetData();
+      }
+    },
+  },
   methods: {
     resetData() {
       this.newData.id = this.$props.user.id;
@@ -88,13 +95,6 @@ export default {
     saveChanges() {
       if (this.newData.oldPass == "" || this.newData.newUsername == "" || this.newData.newPass == "") return;
       this.$emit("save", this.newData);
-    },
-  },
-  watch: {
-    visible(newValue) {
-      if (newValue) {
-        this.resetData();
-      }
     },
   },
 };

@@ -1,7 +1,7 @@
-import { Inbound } from "./inbounds";
-import { Outbound } from "./outbounds";
-import { Dns } from "./dns";
-import { Dial } from "./dial";
+import type { Inbound } from "./inbounds";
+import type { Outbound } from "./outbounds";
+import type { Dns } from "./dns";
+import type { Dial } from "./dial";
 
 interface Log {
   disabled?: boolean;

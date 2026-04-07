@@ -57,29 +57,29 @@ export const HumanReadable = {
   sizeFormat(size: number, fix: number = 2) {
     if (!size || size < 0) return "-";
     if (size < ONE_KB) {
-      return size.toFixed(0) + " " + i18n.global.t("stats.B");
+      return `${size.toFixed(0)} ${i18n.global.t("stats.B")}`;
     } else if (size < ONE_MB) {
-      return (size / ONE_KB).toFixed(fix) + " " + i18n.global.t("stats.KB");
+      return `${(size / ONE_KB).toFixed(fix)} ${i18n.global.t("stats.KB")}`;
     } else if (size < ONE_GB) {
-      return (size / ONE_MB).toFixed(fix) + " " + i18n.global.t("stats.MB");
+      return `${(size / ONE_MB).toFixed(fix)} ${i18n.global.t("stats.MB")}`;
     } else if (size < ONE_TB) {
-      return (size / ONE_GB).toFixed(fix) + " " + i18n.global.t("stats.GB");
+      return `${(size / ONE_GB).toFixed(fix)} ${i18n.global.t("stats.GB")}`;
     } else if (size < ONE_PB) {
-      return (size / ONE_TB).toFixed(fix) + " " + i18n.global.t("stats.TB");
+      return `${(size / ONE_TB).toFixed(fix)} ${i18n.global.t("stats.TB")}`;
     } else {
-      return (size / ONE_PB).toFixed(fix) + " " + i18n.global.t("stats.PB");
+      return `${(size / ONE_PB).toFixed(fix)} ${i18n.global.t("stats.PB")}`;
     }
   },
   packetFormat(size: number, fix: number = 2) {
     if (!size || size < 0) return "-";
     if (size < 1000) {
-      return size.toFixed(0) + " " + i18n.global.t("stats.p");
-    } else if (size < 1000000) {
-      return (size / 1000).toFixed(fix) + " " + i18n.global.t("stats.Kp");
-    } else if (size < 1000000000) {
-      return (size / 1000000).toFixed(fix) + " " + i18n.global.t("stats.Mp");
+      return `${size.toFixed(0)} ${i18n.global.t("stats.p")}`;
+    } else if (size < 1_000_000) {
+      return `${(size / 1000).toFixed(fix)} ${i18n.global.t("stats.Kp")}`;
+    } else if (size < 1_000_000_000) {
+      return `${(size / 1_000_000).toFixed(fix)} ${i18n.global.t("stats.Mp")}`;
     } else {
-      return (size / 1000000000).toFixed(fix) + " " + i18n.global.t("stats.Gp");
+      return `${(size / 1_000_000_000).toFixed(fix)} ${i18n.global.t("stats.Gp")}`;
     }
   },
   formatSecond(second: number): string {
@@ -93,12 +93,12 @@ export const HumanReadable = {
     }
     const day = Math.floor(second / 3600 / 24);
     const remain = Math.floor(second / 3600 - day * 24);
-    return day + i18n.global.t("date.d") + (remain > 0 ? " " + remain + i18n.global.t("date.h") : "");
+    return day + i18n.global.t("date.d") + (remain > 0 ? ` ${remain}${i18n.global.t("date.h")}` : "");
   },
   remainedDays(exp: number): string {
     if (exp == 0) return i18n.global.t("unlimited");
     const now = Date.now() / 1000;
     if (exp < now) return i18n.global.t("date.expired");
-    return Math.floor((exp - now) / (3600 * 24)) + " " + i18n.global.t("date.d");
+    return `${Math.floor((exp - now) / (3600 * 24))} ${i18n.global.t("date.d")}`;
   },
 };

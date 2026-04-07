@@ -9,12 +9,12 @@
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-select
+            v-model="data.quic_congestion_control"
             hide-details
             :label="$t('types.naive.quicCongestion')"
             :items="inbCngs"
-            v-model="data.quic_congestion_control"
-            @click:clear="delete data.quic_congestion_control"
             clearable
+            @click:clear="delete data.quic_congestion_control"
           >
           </v-select>
         </v-col>
@@ -24,20 +24,20 @@
     <template v-if="['out', 'out_json'].includes(direction)">
       <v-row v-if="direction === 'out'">
         <v-col cols="12" sm="6" md="4">
-          <v-text-field :label="$t('types.un')" hide-details v-model="data.username"> </v-text-field>
+          <v-text-field v-model="data.username" :label="$t('types.un')" hide-details> </v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4">
-          <v-text-field :label="$t('types.pw')" hide-details type="password" v-model="data.password"> </v-text-field>
+          <v-text-field v-model="data.password" :label="$t('types.pw')" hide-details type="password"> </v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" sm="6" md="4">
           <v-text-field
+            v-model.number="insecure_concurrency"
             :label="$t('types.naive.insecureConcurrency')"
             type="number"
             min="0"
             hide-details
-            v-model.number="insecure_concurrency"
           >
           </v-text-field>
         </v-col>
@@ -49,14 +49,14 @@
         <v-col cols="12" sm="6" md="4">
           <v-switch v-model="data.quic" color="primary" :label="$t('types.naive.quic')" hide-details></v-switch>
         </v-col>
-        <v-col cols="12" sm="6" md="4" v-if="data.quic">
+        <v-col v-if="data.quic" cols="12" sm="6" md="4">
           <v-select
+            v-model="data.quic_congestion_control"
             hide-details
             :label="$t('types.naive.quicCongestion')"
             :items="outCngs"
-            @click:clear="delete data.quic_congestion_control"
             clearable
-            v-model="data.quic_congestion_control"
+            @click:clear="delete data.quic_congestion_control"
           >
           </v-select>
         </v-col>
@@ -71,6 +71,7 @@ import Network from "@/components/Network.vue";
 import Headers from "@/components/Headers.vue";
 
 export default {
+  components: { Network, Headers },
   props: ["data", "direction"],
   data() {
     return {
@@ -97,11 +98,7 @@ export default {
         return d?.udp_over_tcp === true || (d?.udp_over_tcp && (d.udp_over_tcp as any)?.enabled);
       },
       set(v: boolean) {
-        if (v) {
-          this.$props.data.udp_over_tcp = { enabled: true };
-        } else {
-          this.$props.data.udp_over_tcp = false;
-        }
+        this.$props.data.udp_over_tcp = v ? { enabled: true } : false;
       },
     },
     insecure_concurrency: {
@@ -119,7 +116,6 @@ export default {
         {
           get(_, prop) {
             if (prop === "headers") return d?.extra_headers ?? {};
-            return undefined;
           },
           set(_, prop, value) {
             if (prop === "headers") {
@@ -132,6 +128,5 @@ export default {
       );
     },
   },
-  components: { Network, Headers },
 };
 </script>

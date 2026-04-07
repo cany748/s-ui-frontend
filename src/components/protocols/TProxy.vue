@@ -12,10 +12,10 @@
 import Network from "@/components/Network.vue";
 
 export default {
+  components: { Network },
   props: ["inbound"],
   data() {
     return {};
   },
-  components: { Network },
 };
 </script>

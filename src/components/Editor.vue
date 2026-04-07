@@ -13,13 +13,13 @@
           <v-textarea
             ref="textareaRef"
             v-model="content"
-            @scroll="syncScroll"
             hide-details
             variant="outlined"
             bg-color="background"
             :style="{ 'font-family': 'monospace' }"
             no-resize
             auto-grow
+            @scroll="syncScroll"
           ></v-textarea>
         </div>
       </v-card-text>
@@ -53,6 +53,13 @@ export default {
       return this.content?.split("\n").length;
     },
   },
+  watch: {
+    visible(v) {
+      if (v) {
+        this.content = this.$props.data;
+      }
+    },
+  },
   methods: {
     syncScroll() {
       const textarea = document.querySelector("textarea");
@@ -68,13 +75,6 @@ export default {
       this.$emit("save", this.content);
     },
   },
-  watch: {
-    visible(v) {
-      if (v) {
-        this.content = this.$props.data;
-      }
-    },
-  },
 };
 </script>
 
@@ -82,7 +82,7 @@ export default {
 .code-editor {
   direction: ltr !important;
   display: flex;
-  border: 1px solid v-bind('theme.current.colors["outline"]');
+  border: 1px solid v-bind("theme.current.colors.outline");
   border-radius: 4px;
   overflow: hidden;
   font-size: 14px; /* Consistent font size */
@@ -90,7 +90,7 @@ export default {
 
 .line-numbers {
   width: 40px;
-  background: v-bind('theme.current.colors["surface"]');
+  background: v-bind("theme.current.colors.surface");
   text-align: right;
   padding: 12px 8px 12px 4px; /* Match textarea padding */
   line-height: 1.5; /* Match textarea line height */

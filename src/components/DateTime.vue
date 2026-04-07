@@ -1,17 +1,17 @@
 <template>
   <v-text-field
     id="expiry"
-    :label="$t('date.expiry')"
     v-model="dateFormatted"
+    :label="$t('date.expiry')"
     prepend-inner-icon="mdi-calendar"
     readonly
     hide-details
   ></v-text-field>
-  <DatePicker v-model="Input" @input="Input = $event" :locale="locale" element="expiry" compact-time type="datetime">
-    <template v-slot:next-month>
+  <DatePicker v-model="Input" :locale="locale" element="expiry" compact-time type="datetime" @input="Input = $event">
+    <template #next-month>
       <v-icon icon="mdi-chevron-right" />
     </template>
-    <template v-slot:prev-month>
+    <template #prev-month>
       <v-icon icon="mdi-chevron-left" />
     </template>
     <template #submit-btn="{ submit, canSubmit }">
@@ -35,6 +35,7 @@ import "moment/locale/zh-cn";
 import "moment/locale/zh-tw";
 
 export default {
+  components: { DatePicker },
   props: ["expiry"],
   emits: ["submit"],
   data() {
@@ -43,7 +44,6 @@ export default {
       input: new Date(),
     };
   },
-  components: { DatePicker },
   computed: {
     locale() {
       return locale;
@@ -54,7 +54,7 @@ export default {
       return date.toLocaleString(locale);
     },
     expDate() {
-      return parseInt(this.expiry ?? 0);
+      return Number.parseInt(this.expiry ?? 0);
     },
     Input: {
       get() {
@@ -64,6 +64,13 @@ export default {
         this.input = new Date(v);
         this.submit();
       },
+    },
+  },
+  watch: {
+    menu(v) {
+      if (v) {
+        this.input = this.expiry == 0 ? new Date() : new Date(this.expDate * 1000);
+      }
     },
   },
   methods: {
@@ -80,13 +87,6 @@ export default {
       this.$emit("submit", 0);
       this.input = new Date();
       vm.visible = false;
-    },
-  },
-  watch: {
-    menu(v) {
-      if (v) {
-        this.input = this.expiry == 0 ? new Date() : new Date(this.expDate * 1000);
-      }
     },
   },
 };

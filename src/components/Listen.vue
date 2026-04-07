@@ -2,23 +2,23 @@
   <v-card :subtitle="$t('objects.listen')">
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field :label="$t('in.addr')" hide-details required v-model="data.listen"> </v-text-field>
+        <v-text-field v-model="data.listen" :label="$t('in.addr')" hide-details required> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="data.listen_port"
           :label="$t('in.port')"
           hide-details
           type="number"
           min="1"
           max="65535"
           required
-          v-model.number="data.listen_port"
         ></v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionDetour">
-        <v-select :label="$t('listen.detourText')" hide-details :items="inTags" v-model="data.detour"> </v-select>
+      <v-col v-if="optionDetour" cols="12" sm="6" md="4">
+        <v-select v-model="data.detour" :label="$t('listen.detourText')" hide-details :items="inTags"> </v-select>
       </v-col>
     </v-row>
     <v-row v-if="optionTCP">
@@ -35,12 +35,12 @@
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="udpTimeout"
           label="UDP NAT expiration"
           hide-details
           type="number"
           min="1"
           :suffix="$t('date.m')"
-          v-model.number="udpTimeout"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -58,7 +58,7 @@
     <v-card-actions class="pt-0">
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("listen.options") }}</v-btn>
         </template>
         <v-card>
@@ -93,10 +93,10 @@ export default {
   computed: {
     udpTimeout: {
       get() {
-        return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
+        return this.$props.data.udp_timeout ? Number.parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
       },
       set(newValue: number) {
-        this.$props.data.udp_timeout = newValue > 0 ? newValue + "m" : "5m";
+        this.$props.data.udp_timeout = newValue > 0 ? `${newValue}m` : "5m";
       },
     },
     optionTCP: {

@@ -2,13 +2,13 @@
   <v-card subtitle="OCM (OpenAI Codex Multiplexer)">
     <v-row>
       <v-col cols="12" sm="6">
-        <v-text-field :label="$t('types.ocm.credentialPath')" hide-details v-model="data.credential_path"> </v-text-field>
+        <v-text-field v-model="data.credential_path" :label="$t('types.ocm.credentialPath')" hide-details> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6">
-        <v-text-field :label="$t('types.ocm.usagesPath')" hide-details v-model="data.usages_path"> </v-text-field>
+        <v-text-field v-model="data.usages_path" :label="$t('types.ocm.usagesPath')" hide-details> </v-text-field>
       </v-col>
       <v-col cols="12" sm="6">
-        <v-select :label="$t('dial.detourText')" hide-details :items="outTags" v-model="data.detour"> </v-select>
+        <v-select v-model="data.detour" :label="$t('dial.detourText')" hide-details :items="outTags"> </v-select>
       </v-col>
     </v-row>
     <v-card-title>
@@ -18,13 +18,13 @@
     <v-card v-for="(user, index) in data.users || []" :key="index" class="border" style="margin: 4px; padding: 8px" rounded="xl">
       <v-row>
         <v-col cols="auto" align-self="center">
-          <v-icon @click="delUser(index)" color="error" icon="mdi-delete" />
+          <v-icon color="error" icon="mdi-delete" @click="delUser(index)" />
         </v-col>
         <v-col cols="12" sm="4">
-          <v-text-field :label="$t('types.ocm.userName')" hide-details v-model="user.name" />
+          <v-text-field v-model="user.name" :label="$t('types.ocm.userName')" hide-details />
         </v-col>
         <v-col cols="12" sm="6">
-          <v-text-field :label="$t('types.ocm.userToken')" hide-details type="password" v-model="user.token" />
+          <v-text-field v-model="user.token" :label="$t('types.ocm.userToken')" hide-details type="password" />
         </v-col>
       </v-row>
     </v-card>

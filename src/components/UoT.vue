@@ -1,5 +1,5 @@
 <template>
-  <v-select hide-details label="UDP over TCP" :items="versions" v-model="udp_over_tcp"> </v-select>
+  <v-select v-model="udp_over_tcp" hide-details label="UDP over TCP" :items="versions"> </v-select>
 </template>
 
 <script lang="ts">

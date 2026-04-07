@@ -1,29 +1,29 @@
 <template>
   <v-card :subtitle="$t('objects.dial')" style="background-color: inherit">
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionDetour">
-        <v-select hide-details :label="$t('dial.detourText')" :items="outTags" v-model="dial.detour"> </v-select>
+      <v-col v-if="optionDetour" cols="12" sm="6" md="4">
+        <v-select v-model="dial.detour" hide-details :label="$t('dial.detourText')" :items="outTags"> </v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionBind">
-        <v-text-field :label="$t('dial.bindIf')" hide-details v-model="dial.bind_interface"></v-text-field>
+      <v-col v-if="optionBind" cols="12" sm="6" md="4">
+        <v-text-field v-model="dial.bind_interface" :label="$t('dial.bindIf')" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionIPV4">
-        <v-text-field :label="$t('dial.bindIp4')" hide-details v-model="dial.inet4_bind_address"></v-text-field>
+      <v-col v-if="optionIPV4" cols="12" sm="6" md="4">
+        <v-text-field v-model="dial.inet4_bind_address" :label="$t('dial.bindIp4')" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionIPV6">
-        <v-text-field :label="$t('dial.bindIp6')" hide-details v-model="dial.inet6_bind_address"></v-text-field>
+      <v-col v-if="optionIPV6" cols="12" sm="6" md="4">
+        <v-text-field v-model="dial.inet6_bind_address" :label="$t('dial.bindIp6')" hide-details></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionBindNoPort">
+      <v-col v-if="optionBindNoPort" cols="12" sm="6" md="4">
         <v-switch v-model="dial.bind_address_no_port" color="primary" :label="$t('dial.bindNoPort')" hide-details></v-switch>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionRM">
-        <v-text-field label="Linux Routing Mark" hide-details type="number" min="0" v-model.number="routingMark"></v-text-field>
+      <v-col v-if="optionRM" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="routingMark" label="Linux Routing Mark" hide-details type="number" min="0"></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionRA">
+      <v-col v-if="optionRA" cols="12" sm="6" md="4">
         <v-switch v-model="dial.reuse_addr" color="primary" :label="$t('dial.reuseAddr')" hide-details></v-switch>
       </v-col>
     </v-row>
@@ -47,29 +47,29 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6" md="4" v-if="optionUDP">
+      <v-col v-if="optionUDP" cols="12" sm="6" md="4">
         <v-switch v-model="dial.udp_fragment" color="primary" label="UDP Fragment" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="optionCT">
+      <v-col v-if="optionCT" cols="12" sm="6" md="4">
         <v-text-field
+          v-model.number="connectTimeout"
           :label="$t('dial.connTimeout')"
           hide-details
           type="number"
           min="1"
           :suffix="$t('date.s')"
-          v-model.number="connectTimeout"
         ></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="optionDR">
       <v-col cols="12" sm="6" md="4">
-        <v-select hide-details :label="$t('dial.domainResolver')" :items="dnsTags" v-model="dial.domain_resolver"> </v-select>
+        <v-select v-model="dial.domain_resolver" hide-details :label="$t('dial.domainResolver')" :items="dnsTags"> </v-select>
       </v-col>
     </v-row>
     <v-card-actions class="pt-0">
       <v-spacer></v-spacer>
       <v-menu v-model="menu" :close-on-content-click="false" location="start">
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" hide-details variant="tonal">{{ $t("dial.options") }}</v-btn>
         </template>
         <v-card>
@@ -133,10 +133,10 @@ export default {
     },
     connectTimeout: {
       get() {
-        return this.$props.dial.connect_timeout ? parseInt(this.$props.dial.connect_timeout.replace("s", "")) : 5;
+        return this.$props.dial.connect_timeout ? Number.parseInt(this.$props.dial.connect_timeout.replace("s", "")) : 5;
       },
       set(newValue: number) {
-        this.$props.dial.connect_timeout = newValue > 0 ? newValue + "s" : "5s";
+        this.$props.dial.connect_timeout = newValue > 0 ? `${newValue}s` : "5s";
       },
     },
     routingMark: {
@@ -144,7 +144,7 @@ export default {
         return this.$props.dial.routing_mark ?? 0;
       },
       set(newValue: number) {
-        this.$props.dial.routing_mark = newValue > 0 ? newValue : 0;
+        this.$props.dial.routing_mark = Math.max(newValue, 0);
       },
     },
     optionDetour: {

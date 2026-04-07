@@ -4,7 +4,7 @@
       <v-col cols="12" sm="8">
         <v-text-field
           v-model="addrs"
-          :label="$t('types.tun.addr') + ' ' + $t('commaSeparated')"
+          :label="`${$t('types.tun.addr')} ${$t('commaSeparated')}`"
           placeholder="172.18.0.1/30"
           hide-details
         ></v-text-field>
@@ -22,12 +22,12 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field type="number" v-model.number="data.mtu" label="MTU" hide-details></v-text-field>
+        <v-text-field v-model.number="data.mtu" type="number" label="MTU" hide-details></v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-text-field type="number" v-model.number="udpTimeout" label="UDP timeout" min="1" :suffix="$t('date.m')" hide-details>
+        <v-text-field v-model.number="udpTimeout" type="number" label="UDP timeout" min="1" :suffix="$t('date.m')" hide-details>
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="4">
@@ -41,17 +41,17 @@
       <v-col cols="12" sm="6" md="4">
         <v-switch v-model="autoRoute" color="primary" label="Auto Route" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="autoRoute">
+      <v-col v-if="autoRoute" cols="12" sm="6" md="4">
         <v-switch v-model="data.auto_redirect" color="primary" label="Auto Redirect" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="autoRoute">
+      <v-col v-if="autoRoute" cols="12" sm="6" md="4">
         <v-switch v-model="data.strict_route" color="primary" label="Strict Route" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="autoRoute && data.auto_redirect">
+      <v-col v-if="autoRoute && data.auto_redirect" cols="12" sm="6" md="4">
         <v-switch v-model="data.exclude_mptcp" color="primary" :label="$t('types.tun.excludeMptcp')" hide-details></v-switch>
       </v-col>
-      <v-col cols="12" sm="6" md="4" v-if="autoRoute && data.auto_redirect">
-        <v-text-field type="number" v-model.number="fallbackRuleIndex" :label="$t('types.tun.fallbackRuleIndex')" min="0" hide-details>
+      <v-col v-if="autoRoute && data.auto_redirect" cols="12" sm="6" md="4">
+        <v-text-field v-model.number="fallbackRuleIndex" type="number" :label="$t('types.tun.fallbackRuleIndex')" min="0" hide-details>
         </v-text-field>
       </v-col>
     </v-row>
@@ -77,10 +77,10 @@ export default {
     },
     udpTimeout: {
       get() {
-        return this.$props.data.udp_timeout ? parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
+        return this.$props.data.udp_timeout ? Number.parseInt(this.$props.data.udp_timeout.replace("m", "")) : 5;
       },
       set(v: number) {
-        this.$props.data.udp_timeout = v > 0 ? v + "m" : "5m";
+        this.$props.data.udp_timeout = v > 0 ? `${v}m` : "5m";
       },
     },
     autoRoute: {
@@ -95,7 +95,7 @@ export default {
     },
     fallbackRuleIndex: {
       get() {
-        return this.$props.data.auto_redirect_iproute2_fallback_rule_index ?? 32768;
+        return this.$props.data.auto_redirect_iproute2_fallback_rule_index ?? 32_768;
       },
       set(v: number) {
         const val = typeof v === "number" && !isNaN(v) && v >= 0 ? v : undefined;

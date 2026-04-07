@@ -1,7 +1,7 @@
+import { push } from "notivue";
 import api from "./api";
 import { i18n } from "@/locales";
 import router from "@/router";
-import { push } from "notivue";
 
 export interface Msg {
   success: boolean;
@@ -23,7 +23,7 @@ function _handleMsg(msg: any): void {
     }
     if (msg.success) {
       push.success({
-        message: i18n.global.t("success") + ": " + i18n.global.t("actions." + msg.msg),
+        message: `${i18n.global.t("success")}: ${i18n.global.t(`actions.${msg.msg}`)}`,
       });
     } else {
       push.error({
@@ -46,11 +46,7 @@ function _respToMsg(resp: any): Msg {
   if (data == null) {
     return { success: true, msg: "", obj: null };
   } else if (isMsg(data)) {
-    if (data.hasOwnProperty("success")) {
-      return { success: data.success, msg: data.msg, obj: data.obj || null };
-    } else {
-      return data;
-    }
+    return Object.hasOwn(data, "success") ? { success: data.success, msg: data.msg, obj: data.obj || null } : data;
   } else {
     return { success: false, msg: `unknown data: ${data}`, obj: null };
   }
@@ -66,8 +62,8 @@ const HttpUtils = {
     try {
       const resp = await api.get(url, { params: data, ...options });
       msg = _respToMsg(resp);
-    } catch (e: any) {
-      msg = { success: false, msg: e.toString(), obj: null };
+    } catch (error: any) {
+      msg = { success: false, msg: error.toString(), obj: null };
     }
     _handleMsg(msg);
     return msg;
@@ -77,8 +73,8 @@ const HttpUtils = {
     try {
       const resp = await api.post(url, data, options);
       msg = _respToMsg(resp);
-    } catch (e: any) {
-      msg = { success: false, msg: e.toString(), obj: null };
+    } catch (error: any) {
+      msg = { success: false, msg: error.toString(), obj: null };
     }
     _handleMsg(msg);
     return msg;

@@ -11,24 +11,27 @@ export const i18n = createI18n({
   locale: localStorage.getItem("locale") ?? "en",
   fallbackLocale: "en",
   messages: {
-    en: en,
-    fa: fa,
-    vi: vi,
+    en,
+    fa,
+    vi,
     zhHans: zhcn,
     zhHant: zhtw,
-    ru: ru,
+    ru,
   },
 });
 
 export const locale = (() => {
   const l = i18n.global.locale.value;
   switch (l) {
-    case "zhHans":
+    case "zhHans": {
       return "zh-cn";
-    case "zhHant":
+    }
+    case "zhHant": {
       return "zh-tw";
-    default:
+    }
+    default: {
       return l;
+    }
   }
 })();
 

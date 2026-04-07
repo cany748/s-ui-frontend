@@ -2,18 +2,18 @@
   <v-dialog transition="dialog-bottom-transition" width="800">
     <v-card class="rounded-lg">
       <v-card-title>
-        {{ $t("actions." + title) + " " + $t("objects.service") }}
+        {{ `${$t(`actions.${title}`)} ${$t("objects.service")}` }}
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text style="padding: 0 16px; overflow-y: scroll">
         <v-row>
           <v-col cols="12" sm="6" md="4">
             <v-select
+              v-model="srv.type"
               hide-details
               :label="$t('type')"
               :items="Object.keys(srvTypes).map((key, index) => ({ title: key, value: Object.values(srvTypes)[index] }))"
-              v-model="srv.type"
-              @update:modelValue="changeType"
+              @update:model-value="changeType"
             >
             </v-select>
           </v-col>
@@ -22,12 +22,12 @@
           </v-col>
         </v-row>
 
-        <Listen :data="srv" :inTags="inTags" />
-        <Derp v-if="srv.type == srvTypes.DERP" :data="srv" :inTags="inTags" :tsTags="tsTags" />
-        <SSMapi v-if="srv.type == srvTypes.SSMAPI" :data="srv" :ssTags="ssTags" />
+        <Listen :data="srv" :in-tags="inTags" />
+        <Derp v-if="srv.type == srvTypes.DERP" :data="srv" :in-tags="inTags" :ts-tags="tsTags" />
+        <SSMapi v-if="srv.type == srvTypes.SSMAPI" :data="srv" :ss-tags="ssTags" />
         <Ocm v-if="srv.type == srvTypes.OCM" :data="srv" />
         <Ccm v-if="srv.type == srvTypes.CCM" :data="srv" />
-        <InTLS v-if="HasTls.includes(srv.type)" :inbound="srv" :tlsConfigs="tlsConfigs" :tls_id="srv.tls_id" />
+        <InTLS v-if="HasTls.includes(srv.type)" :inbound="srv" :tls-configs="tlsConfigs" :tls_id="srv.tls_id" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -52,7 +52,9 @@ import Ccm from "@/components/services/Ccm.vue";
 import InTLS from "@/components/tls/InTLS.vue";
 import SSMapi from "@/components/services/SSMAPI.vue";
 import Data from "@/store/modules/data";
+
 export default {
+  components: { Listen, InTLS, Derp, Ocm, Ccm, SSMapi },
   props: ["visible", "data", "id", "inTags", "tsTags", "ssTags", "tlsConfigs"],
   emits: ["close"],
   data() {
@@ -65,6 +67,13 @@ export default {
       HasTls: [SrvTypes.DERP, SrvTypes.SSMAPI, SrvTypes.OCM, SrvTypes.CCM],
     };
   },
+  watch: {
+    visible(v) {
+      if (v) {
+        this.updateData(this.$props.id);
+      }
+    },
+  },
   methods: {
     async updateData(id: number) {
       if (id > 0) {
@@ -72,9 +81,9 @@ export default {
         this.srv = createSrv(newData.type, newData);
         this.title = "edit";
       } else {
-        const port = RandomUtil.randomIntRange(10000, 60000);
+        const port = RandomUtil.randomIntRange(10_000, 60_000);
         this.srv = createSrv("derp", {
-          tag: "derp-" + RandomUtil.randomSeq(3),
+          tag: `derp-${RandomUtil.randomSeq(3)}`,
           listen: "::",
           listen_port: port,
         });
@@ -84,9 +93,9 @@ export default {
     },
     changeType() {
       // Tag change only in add service
-      const tag = this.$props.id > 0 ? this.srv.tag : this.srv.type + "-" + RandomUtil.randomSeq(3);
+      const tag = this.$props.id > 0 ? this.srv.tag : `${this.srv.type}-${RandomUtil.randomSeq(3)}`;
       // Use previous data
-      const prevConfig = { id: this.srv.id, tag: tag, listen: this.srv.listen, listen_port: this.srv.listen_port };
+      const prevConfig = { id: this.srv.id, tag, listen: this.srv.listen, listen_port: this.srv.listen_port };
       this.srv = createSrv(this.srv.type, prevConfig);
     },
     closeModal() {
@@ -107,13 +116,5 @@ export default {
       this.loading = false;
     },
   },
-  watch: {
-    visible(v) {
-      if (v) {
-        this.updateData(this.$props.id);
-      }
-    },
-  },
-  components: { Listen, InTLS, Derp, Ocm, Ccm, SSMapi },
 };
 </script>
