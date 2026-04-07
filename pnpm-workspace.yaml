@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - unrs-resolver
+shamefullyHoist: true
+shellEmulator: true
+strictPeerDependencies: false
