@@ -164,7 +164,7 @@ export default {
         return filename.replace(/\.[^.]+$/, "");
       } catch {
         const parts = url.split("/");
-        return parts.at(-1).replace(/\.[^.]+$/, "") || url;
+        return parts.at(-1)!.replace(/\.[^.]+$/, "") || url;
       }
     },
     close() {

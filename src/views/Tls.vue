@@ -104,7 +104,7 @@ const modal = ref({
   data: "",
 });
 
-const delOverlay = ref(Array.from({ length: tlsConfigs.value.length }).fill(false));
+const delOverlay = ref(Array.from({ length: tlsConfigs.value.length }).fill(false) as boolean[]);
 
 const showModal = (id: number) => {
   modal.value.id = id;

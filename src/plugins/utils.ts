@@ -1,9 +1,5 @@
 import { i18n } from "@/locales";
 
-type OBJ = {
-  [key: string]: any;
-};
-
 export const FindDiff = {
   deepCompare(obj1: any, obj2: any): boolean {
     // Check if the types of both objects are the same

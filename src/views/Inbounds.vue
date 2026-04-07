@@ -100,14 +100,9 @@
 import Data from "@/store/modules/data";
 import InboundVue from "@/layouts/modals/Inbound.vue";
 import Stats from "@/layouts/modals/Stats.vue";
-import { Config } from "@/types/config";
 import { computed, ref } from "vue";
 import { createInbound, Inbound } from "@/types/inbounds";
 import RandomUtil from "@/plugins/randomUtil";
-
-const appConfig = computed((): Config => {
-  return <Config>Data().config;
-});
 
 const inbounds = computed((): Inbound[] => {
   return <Inbound[]>Data().inbounds;

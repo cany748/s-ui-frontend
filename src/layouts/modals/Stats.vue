@@ -93,7 +93,7 @@ export default {
             },
             beginAtZero: true,
             ticks: {
-              callback: function (label: any, index: number) {
+              callback: function (label: any) {
                 return label == 0 ? 0 : HumanReadable.sizeFormat(label, 0);
               },
               count: 10,

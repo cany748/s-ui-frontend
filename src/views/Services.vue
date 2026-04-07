@@ -79,9 +79,6 @@ const services = computed((): Srv[] => {
   return <Srv[]>Data().services;
 });
 
-const srvTags = computed((): any[] => {
-  return services.value?.map((o: Srv) => o.tag);
-});
 
 const tsTags = computed((): any[] => {
   return Data()

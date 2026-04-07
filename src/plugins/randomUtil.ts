@@ -58,7 +58,7 @@ const RandomUtil = {
     return btoa(String.fromCharCode(...array));
   },
   randomShortId(): string[] {
-    const shortIds = Array.from({ length: 24 }).fill("");
+    const shortIds = Array.from({ length: 24 }).fill("") as string[];
     for (let ii = 1; ii < 24; ii++) {
       for (let jj = 0; jj <= this.randomInt(7); jj++) {
         const randomNum = this.randomInt(256);

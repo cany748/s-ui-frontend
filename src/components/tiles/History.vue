@@ -75,7 +75,7 @@ export default {
             },
             beginAtZero: true,
             ticks: {
-              callback: (label: any, index: number) => {
+              callback: (label: any) => {
                 return parseInt(label).toString();
               },
               count: 10,
@@ -90,17 +90,17 @@ export default {
     options() {
       switch (this.$props.type) {
         case "h-net":
-          this.optionsNet.scales.y.ticks.callback = (label: any, index: number) => {
+          this.optionsNet.scales.y.ticks.callback = (label: any) => {
             return label == 0 ? "0" : HumanReadable.sizeFormat(label, 0);
           };
           return this.optionsNet;
         case "hp-net":
-          this.optionsNet.scales.y.ticks.callback = (label: any, index: number) => {
+          this.optionsNet.scales.y.ticks.callback = (label: any) => {
             return label == 0 ? "0" : HumanReadable.packetFormat(label, 0);
           };
           return this.optionsNet;
         case "h-dio":
-          this.optionsNet.scales.y.ticks.callback = (label: any, index: number) => {
+          this.optionsNet.scales.y.ticks.callback = (label: any) => {
             return label == 0 ? "0" : HumanReadable.sizeFormat(label, 0);
           };
           return this.optionsNet;
