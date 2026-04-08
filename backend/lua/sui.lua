@@ -48,4 +48,7 @@ M.register("POST", "/api/save", function(env) return save_handler(env, M.config)
 local status_mod = require("api.status")
 M.register("GET", "/api/status", function(env) return status_mod.handler(env, M.config) end)
 
+local logs_mod = require("api.logs")
+M.register("GET", "/api/logs", function(env) return logs_mod.handler(env, M.config) end)
+
 return M

@@ -77,6 +77,21 @@ describe("GET /api/status", function()
   end)
 end)
 
+describe("GET /api/logs", function()
+  it("returns log lines", function()
+    require("api.logs")._exec = function(cmd)
+      assert.matches("logread", cmd)
+      assert.matches("tail %-n 50", cmd)
+      return "line1\nline2\n", 0
+    end
+    local resp = sui.handle({ path="/api/logs", method="GET", body="",
+                              query={ count="50", level="info" } })
+    local body = require("cjson").decode(resp.body)
+    assert.is_true(body.success)
+    assert.same({"line1","line2"}, body.obj.lines)
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
