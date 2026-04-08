@@ -112,6 +112,57 @@ describe("meta_mapper.validate_clients", function()
   end)
 end)
 
+describe("meta_mapper.save", function()
+  it("round-trips simple vmess config", function()
+    local original = helpers.load_fixture("vmess-simple.json")
+    local state = mapper.load(original, nil)
+    local sb_config, sui_meta = mapper.save(state)
+    assert.equal(#original.inbounds, #sb_config.inbounds)
+    assert.equal("vmess-in", sb_config.inbounds[1].tag)
+    assert.equal(2, #sb_config.inbounds[1].users)
+    assert.is_nil(sb_config.inbounds[1].tls_id)
+  end)
+
+  it("round-trips reality config preserving tls block", function()
+    local original = helpers.load_fixture("vless-reality.json")
+    local state = mapper.load(original, nil)
+    local sb_config, sui_meta = mapper.save(state)
+    local tls = sb_config.inbounds[1].tls
+    assert.is_table(tls)
+    assert.is_true(tls.reality.enabled)
+    assert.is_nil(sb_config.inbounds[1].tls_id)
+    assert.equal(1, #sui_meta.tlsConfigs)
+  end)
+
+  it("round-trips multi-tls config", function()
+    local original = helpers.load_fixture("multi-tls.json")
+    local state = mapper.load(original, nil)
+    local sb_config, sui_meta = mapper.save(state)
+    assert.equal("shared.example.com", sb_config.inbounds[1].tls.server_name)
+    assert.equal("shared.example.com", sb_config.inbounds[2].tls.server_name)
+    assert.equal("remote.example.com", sb_config.outbounds[2].tls.server_name)
+    assert.equal(2, #sui_meta.tlsConfigs)
+  end)
+end)
+
+describe("meta_mapper round-trip idempotence", function()
+  local fixtures = {
+    "empty.json", "vmess-simple.json", "vless-reality.json",
+    "trojan-tls.json", "wireguard-endpoint.json", "multi-tls.json",
+  }
+  for _, name in ipairs(fixtures) do
+    it("is idempotent for " .. name, function()
+      local original = helpers.load_fixture(name)
+      local state1 = mapper.load(original, nil)
+      local sb1, meta1 = mapper.save(state1)
+      local state2 = mapper.load(sb1, meta1)
+      local sb2, meta2 = mapper.save(state2)
+      assert.is_true(helpers.deep_equal(sb1, sb2),
+        "second pass differs for " .. name)
+    end)
+  end
+end)
+
 describe("meta_mapper.load", function()
   it("composes extract_tls + extract_clients into store-shaped object", function()
     local config = helpers.load_fixture("vless-reality.json")

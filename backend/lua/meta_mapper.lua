@@ -147,6 +147,33 @@ function M.load(raw_config, existing_meta)
   }
 end
 
+function M.save(state)
+  local ok, err = M.validate_clients(state.inbounds, state.clients)
+  if not ok then error(err) end
+
+  local inbounds, outbounds = M.inline_tls(state.inbounds, state.outbounds, state.tls or {})
+
+  local sb = {}
+  if state.config then
+    for k, v in pairs(state.config) do sb[k] = deep_copy(v) end
+  end
+  sb.inbounds = inbounds
+  sb.outbounds = outbounds
+  if state.endpoints and #state.endpoints > 0 then
+    sb.endpoints = deep_copy(state.endpoints)
+  end
+
+  local sui_meta = {
+    version = 1,
+    tlsConfigs = deep_copy(state.tls or {}),
+    tlsBindings = (state.meta and deep_copy(state.meta.tlsBindings)) or { inbound = {}, outbound = {} },
+    clients = deep_copy(state.clients or {}),
+    clientBindings = (state.meta and deep_copy(state.meta.clientBindings)) or {},
+  }
+
+  return sb, sui_meta
+end
+
 function M.validate_clients(inbounds, clients)
   local tag_set = {}
   for _, ib in ipairs(inbounds or {}) do tag_set[ib.tag] = true end
