@@ -112,6 +112,23 @@ describe("POST /api/restart", function()
   end)
 end)
 
+describe("GET /api/checkOutbound", function()
+  it("returns delay from clash api", function()
+    require("api.check_outbound")._http_get = function(url)
+      assert.matches("/proxies/myout/delay", url)
+      return 200, '{"delay":123}'
+    end
+    sui.config = sui.config or {}
+    sui.config.clash_api_url = "http://127.0.0.1:9090"
+    sui.config.clash_api_secret = ""
+    local resp = sui.handle({ path="/api/checkOutbound", method="GET", body="",
+                              query={tag="myout"} })
+    local b = require("cjson").decode(resp.body)
+    assert.is_true(b.success)
+    assert.equal(123, b.obj.delay)
+  end)
+end)
+
 describe("GET /api/keypairs", function()
   before_each(function()
     require("api.keypairs")._exec = function(cmd)

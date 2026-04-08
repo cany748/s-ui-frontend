@@ -56,4 +56,16 @@ function M.write_json_atomic(path, obj)
   return M.write_file_atomic(path, s)
 end
 
+function M.http_get(url, headers)
+  local hdrs = ""
+  for k, v in pairs(headers or {}) do
+    hdrs = hdrs .. " -H " .. string.format("%q", k .. ": " .. v)
+  end
+  local cmd = "curl -sS -m 10 -w '\\n___HTTP___%{http_code}'" .. hdrs .. " " .. string.format("%q", url)
+  local out, code = M.exec(cmd)
+  if code ~= 0 then return nil, "curl failed: " .. out end
+  local body, status = out:match("^(.*)\n___HTTP___(%d+)$")
+  return tonumber(status), body
+end
+
 return M

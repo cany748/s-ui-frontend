@@ -57,4 +57,7 @@ M.register("POST", "/api/restart", function(env) return restart_mod.handler(env,
 local keypairs_mod = require("api.keypairs")
 M.register("GET", "/api/keypairs", function(env) return keypairs_mod.handler(env, M.config) end)
 
+local check_mod = require("api.check_outbound")
+M.register("GET", "/api/checkOutbound", function(env) return check_mod.handler(env, M.config) end)
+
 return M
