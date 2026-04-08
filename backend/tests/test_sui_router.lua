@@ -24,6 +24,41 @@ describe("GET /api/load", function()
   end)
 end)
 
+describe("POST /api/save", function()
+  local cp, mp
+  before_each(function()
+    cp = os.tmpname()
+    local f = io.open(cp, "w")
+    f:write([[{"inbounds":[],"outbounds":[]}]])
+    f:close()
+    mp = os.tmpname(); os.remove(mp)
+    sui.config = { singbox_config_path = cp, meta_path = mp }
+    require("config_io").singbox_cmd = "true --"
+  end)
+  after_each(function() os.remove(cp); pcall(os.remove, mp) end)
+
+  it("saves new state and returns updated mtime", function()
+    local load_resp = sui.handle({ path="/api/load", method="GET", body="" })
+    local state = require("cjson").decode(load_resp.body).obj
+    state.inbounds = {{ type="vmess", tag="t", users={} }}
+    local body = require("cjson").encode(state)
+    local resp = sui.handle({ path="/api/save", method="POST", body=body })
+    local r = require("cjson").decode(resp.body)
+    assert.is_true(r.success, r.msg)
+    assert.is_number(r.obj.mtime)
+  end)
+
+  it("returns error on mtime conflict", function()
+    local load_resp = sui.handle({ path="/api/load", method="GET", body="" })
+    local state = require("cjson").decode(load_resp.body).obj
+    state.mtime = 1  -- stale mtime
+    local resp = sui.handle({ path="/api/save", method="POST", body=require("cjson").encode(state) })
+    local r = require("cjson").decode(resp.body)
+    assert.is_false(r.success)
+    assert.matches("modified", r.msg)
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
