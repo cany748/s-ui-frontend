@@ -26,4 +26,14 @@ function M.write_file_atomic(path, content)
   return true
 end
 
+function M.exec(cmd)
+  local p = io.popen(cmd .. " 2>&1; echo \"___EXIT___$?\"", "r")
+  if not p then return "", 127 end
+  local out = p:read("*a") or ""
+  p:close()
+  local exit_code = tonumber(out:match("___EXIT___(%-?%d+)\n?$")) or 1
+  out = out:gsub("___EXIT___%-?%d+\n?$", "")
+  return out, exit_code
+end
+
 return M
