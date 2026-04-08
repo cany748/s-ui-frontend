@@ -59,6 +59,24 @@ describe("POST /api/save", function()
   end)
 end)
 
+describe("GET /api/status", function()
+  it("returns status envelope", function()
+    sui.config = sui.config or {}
+    sui.config.singbox_service = "sing-box"
+    -- mock sing-box version
+    require("api.status")._exec = function(cmd)
+      if cmd:match("version") then return "sing-box version 1.10.0\n", 0 end
+      if cmd:match("pidof") then return "", 1 end
+      return "", 0
+    end
+    local resp = sui.handle({ path="/api/status", method="GET", body="" })
+    local body = require("cjson").decode(resp.body)
+    assert.is_true(body.success)
+    assert.is_false(body.obj.running)
+    assert.matches("1.10.0", body.obj.version)
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
