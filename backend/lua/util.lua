@@ -56,6 +56,28 @@ function M.write_json_atomic(path, obj)
   return M.write_file_atomic(path, s)
 end
 
+function M.http_request(method, url, headers, body)
+  local hdrs = ""
+  for k, v in pairs(headers or {}) do
+    hdrs = hdrs .. " -H " .. string.format("%q", k .. ": " .. v)
+  end
+  local body_arg = ""
+  local body_file
+  if body and #body > 0 then
+    body_file = os.tmpname()
+    local f = io.open(body_file, "wb"); f:write(body); f:close()
+    body_arg = " --data-binary @" .. body_file
+  end
+  local cmd = "curl -sS -m 30 -X " .. method ..
+              " -w '\\n___HTTP___%{http_code}\\n___CT___%{content_type}'" ..
+              hdrs .. body_arg .. " " .. string.format("%q", url)
+  local out, code = M.exec(cmd)
+  if body_file then os.remove(body_file) end
+  if code ~= 0 then return nil, "curl failed: " .. out end
+  local resp_body, status, ct = out:match("^(.*)\n___HTTP___(%d+)\n___CT___(.-)$")
+  return tonumber(status), resp_body, ct
+end
+
 function M.http_get(url, headers)
   local hdrs = ""
   for k, v in pairs(headers or {}) do

@@ -21,8 +21,7 @@ M.envelope = envelope
 
 function M.handle(env)
   if env.path and env.path:sub(1, 7) == "/clash/" then
-    local ok, proxy = pcall(require, "clash_proxy")
-    if ok then return proxy.handler(env, M.config) end
+    return require("clash_proxy").handler(env, M.config)
   end
 
   local key = env.method .. " " .. env.path

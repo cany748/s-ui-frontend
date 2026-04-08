@@ -216,6 +216,37 @@ describe("GET /api/keypairs", function()
   end)
 end)
 
+describe("clash proxy", function()
+  it("forwards GET /clash/traffic with bearer secret", function()
+    require("clash_proxy")._http_request = function(method, url, headers, body)
+      assert.equal("GET", method)
+      assert.matches("/traffic$", url)
+      assert.equal("Bearer hunter2", headers["Authorization"])
+      return 200, '{"up":1,"down":2}', "application/json"
+    end
+    sui.config = sui.config or {}
+    sui.config.clash_api_url = "http://127.0.0.1:9090"
+    sui.config.clash_api_secret = "hunter2"
+    local resp = sui.handle({ path="/clash/traffic", method="GET", body="" })
+    assert.equal(200, resp.status)
+    assert.matches('"up":1', resp.body)
+  end)
+
+  it("strips client Authorization header", function()
+    local seen
+    require("clash_proxy")._http_request = function(_, _, headers)
+      seen = headers
+      return 200, "", "application/json"
+    end
+    sui.config = sui.config or {}
+    sui.config.clash_api_url = "http://127.0.0.1:9090"
+    sui.config.clash_api_secret = "hunter2"
+    sui.handle({ path="/clash/proxies", method="GET", body="",
+                 headers = { Authorization = "Bearer evil" } })
+    assert.equal("Bearer hunter2", seen["Authorization"])
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
