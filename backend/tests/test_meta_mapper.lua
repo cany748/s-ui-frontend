@@ -54,3 +54,29 @@ describe("meta_mapper.extract_clients", function()
     assert.same({1}, bindings["trojan-in-2"])
   end)
 end)
+
+describe("meta_mapper.load", function()
+  it("composes extract_tls + extract_clients into store-shaped object", function()
+    local config = helpers.load_fixture("vless-reality.json")
+    local result = mapper.load(config, nil)
+    assert.is_table(result.config)
+    assert.equal("info", result.config.log.level)
+    assert.equal(1, #result.inbounds)
+    assert.equal(1, result.inbounds[1].tls_id)
+    assert.is_nil(result.inbounds[1].tls)
+    assert.equal(1, #result.tls)
+    assert.equal(1, #result.clients)
+    assert.equal("alice", result.clients[1].name)
+  end)
+
+  it("preserves tls config name from existing meta", function()
+    local config = helpers.load_fixture("trojan-tls.json")
+    local existing_meta = {
+      tlsConfigs = {
+        { id = 5, name = "my-cert", tls = config.inbounds[1].tls }
+      }
+    }
+    local result = mapper.load(config, existing_meta)
+    assert.equal("my-cert", result.tls[1].name)
+  end)
+end)

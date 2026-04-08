@@ -107,4 +107,44 @@ function M.extract_clients(config)
   return cfg, clients, bindings
 end
 
+local TOP_LEVEL_NON_ARRAY = {
+  log = true, dns = true, ntp = true, route = true,
+  experimental = true, certificate = true,
+}
+
+function M.load(raw_config, existing_meta)
+  local cfg, tls_configs, tls_bindings = M.extract_tls(raw_config)
+  local cfg2, clients, client_bindings = M.extract_clients(cfg)
+
+  if existing_meta and existing_meta.tlsConfigs then
+    for _, new_tc in ipairs(tls_configs) do
+      for _, old_tc in ipairs(existing_meta.tlsConfigs) do
+        if deep_equal(new_tc.tls, old_tc.tls) then
+          new_tc.name = old_tc.name
+          break
+        end
+      end
+    end
+  end
+
+  local config_only = {}
+  for k, v in pairs(cfg2) do
+    if TOP_LEVEL_NON_ARRAY[k] then config_only[k] = v end
+  end
+
+  return {
+    config = config_only,
+    inbounds = cfg2.inbounds or {},
+    outbounds = cfg2.outbounds or {},
+    endpoints = cfg2.endpoints or {},
+    services = (cfg2.experimental and cfg2.experimental.services) or {},
+    clients = clients,
+    tls = tls_configs,
+    meta = {
+      tlsBindings = tls_bindings,
+      clientBindings = client_bindings,
+    },
+  }
+end
+
 return M
