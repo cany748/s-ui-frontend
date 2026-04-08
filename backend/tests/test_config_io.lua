@@ -1,0 +1,72 @@
+local config_io = require("config_io")
+local util = require("util")
+
+local function tmpfile(content)
+  local p = os.tmpname()
+  local f = io.open(p, "w"); f:write(content); f:close()
+  return p
+end
+
+describe("config_io.read", function()
+  it("reads valid config and returns state with mtime", function()
+    local cp = tmpfile([[{"log":{"level":"info"},"inbounds":[],"outbounds":[{"type":"direct","tag":"d"}]}]])
+    local state, mtime, warns = config_io.read(cp, "/nonexistent/meta")
+    assert.is_table(state)
+    assert.equal("info", state.config.log.level)
+    assert.is_number(mtime)
+    assert.equal(0, #warns)
+    os.remove(cp)
+  end)
+
+  it("returns warning if config is missing", function()
+    local state, mtime, warns = config_io.read("/nonexistent/cfg", "/nonexistent/meta")
+    assert.equal(0, #state.inbounds)
+    assert.is_true(#warns > 0)
+  end)
+
+  it("returns warning if config is invalid JSON", function()
+    local cp = tmpfile("{not json")
+    local state, _, warns = config_io.read(cp, "/nonexistent/meta")
+    assert.is_true(#warns > 0)
+    os.remove(cp)
+  end)
+end)
+
+describe("config_io.write", function()
+  before_each(function()
+    config_io.singbox_cmd = "true --"
+  end)
+
+  it("writes config and meta atomically when validation passes", function()
+    local cp = tmpfile([[{"inbounds":[],"outbounds":[]}]])
+    local mp = os.tmpname(); os.remove(mp)
+    local state, mtime = config_io.read(cp, mp)
+    state.inbounds = {{ type="vmess", tag="new", users={} }}
+    local res = config_io.write(state, cp, mp, mtime)
+    assert.is_true(res.ok, res.error)
+    local state2 = config_io.read(cp, mp)
+    assert.equal("new", state2.inbounds[1].tag)
+    os.remove(cp); os.remove(mp)
+  end)
+
+  it("rejects write when mtime mismatches", function()
+    local cp = tmpfile([[{"inbounds":[],"outbounds":[]}]])
+    local state = config_io.read(cp, "/none")
+    local res = config_io.write(state, cp, "/tmp/m", 1)
+    assert.is_false(res.ok)
+    assert.equal("conflict", res.code)
+    os.remove(cp)
+  end)
+
+  it("rejects write when sing-box check fails", function()
+    config_io.singbox_cmd = "false --"
+    local cp = tmpfile([[{"inbounds":[],"outbounds":[]}]])
+    local state, mtime = config_io.read(cp, "/none")
+    local res = config_io.write(state, cp, "/tmp/m", mtime)
+    assert.is_false(res.ok)
+    assert.equal("invalid", res.code)
+    local content = util.read_file(cp)
+    assert.matches("inbounds", content)
+    os.remove(cp)
+  end)
+end)
