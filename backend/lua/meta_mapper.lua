@@ -147,6 +147,19 @@ function M.load(raw_config, existing_meta)
   }
 end
 
+function M.validate_clients(inbounds, clients)
+  local tag_set = {}
+  for _, ib in ipairs(inbounds or {}) do tag_set[ib.tag] = true end
+  for _, c in ipairs(clients or {}) do
+    for _, tag in ipairs(c.inbounds or {}) do
+      if not tag_set[tag] then
+        return false, "client '" .. tostring(c.name) .. "' references missing inbound '" .. tag .. "'"
+      end
+    end
+  end
+  return true
+end
+
 local function build_tls_index(tls_configs)
   local idx = {}
   for _, tc in ipairs(tls_configs) do idx[tc.id] = tc.tls end

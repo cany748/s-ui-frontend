@@ -86,6 +86,32 @@ describe("meta_mapper.inline_tls", function()
   end)
 end)
 
+describe("meta_mapper.validate_clients", function()
+  it("passes when all client refs map to existing users", function()
+    local inbounds = {
+      { type = "vmess", tag = "in1", users = {
+        { name = "alice", uuid = "11111111-1111-1111-1111-111111111111" }
+      }}
+    }
+    local clients = {
+      { id = 1, name = "alice", enable = true,
+        config = { vmess = { uuid = "11111111-1111-1111-1111-111111111111" } },
+        inbounds = {"in1"} }
+    }
+    local ok, err = mapper.validate_clients(inbounds, clients)
+    assert.is_true(ok, err)
+  end)
+
+  it("fails when client references nonexistent inbound", function()
+    local clients = {
+      { id = 1, name = "ghost", enable = true, config = {}, inbounds = {"missing"} }
+    }
+    local ok, err = mapper.validate_clients({}, clients)
+    assert.is_false(ok)
+    assert.matches("missing", err)
+  end)
+end)
+
 describe("meta_mapper.load", function()
   it("composes extract_tls + extract_clients into store-shaped object", function()
     local config = helpers.load_fixture("vless-reality.json")
