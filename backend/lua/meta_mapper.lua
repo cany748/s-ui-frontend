@@ -57,4 +57,54 @@ function M.extract_tls(config)
   return cfg, tls_configs, bindings
 end
 
+local PROTO_KEYS = {
+  vmess = "vmess", vless = "vless", trojan = "trojan",
+  shadowsocks = "shadowsocks", socks = "socks", http = "http",
+  hysteria = "hysteria", hysteria2 = "hysteria2", tuic = "tuic",
+  ["naive"] = "naive", shadowtls = "shadowtls",
+}
+
+local function user_to_proto_config(user)
+  local out = {}
+  for k, v in pairs(user) do
+    if k ~= "name" then out[k] = v end
+  end
+  return out
+end
+
+function M.extract_clients(config)
+  local cfg = deep_copy(config)
+  local clients = {}
+  local bindings = {}
+  local by_name = {}
+
+  for _, inbound in ipairs(cfg.inbounds or {}) do
+    local proto = PROTO_KEYS[inbound.type]
+    if proto and type(inbound.users) == "table" then
+      local ids = {}
+      for _, user in ipairs(inbound.users) do
+        local name = user.name or ("anon-" .. tostring(#clients + 1))
+        local idx = by_name[name]
+        if not idx then
+          idx = #clients + 1
+          clients[idx] = { id = idx, name = name, enable = true, config = {}, inbounds = {} }
+          by_name[name] = idx
+        end
+        clients[idx].config[proto] = user_to_proto_config(user)
+        local has_inbound = false
+        for _, t in ipairs(clients[idx].inbounds) do
+          if t == inbound.tag then has_inbound = true; break end
+        end
+        if not has_inbound then
+          clients[idx].inbounds[#clients[idx].inbounds + 1] = inbound.tag
+        end
+        ids[#ids + 1] = idx
+      end
+      bindings[inbound.tag] = ids
+    end
+  end
+
+  return cfg, clients, bindings
+end
+
 return M
