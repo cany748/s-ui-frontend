@@ -37,4 +37,9 @@ function M.handle(env)
   return result
 end
 
+local load_handler = require("api.load")
+M.register("GET", "/api/load", function(env)
+  return load_handler(env, M.config)
+end)
+
 return M
