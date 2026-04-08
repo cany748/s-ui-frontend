@@ -112,6 +112,51 @@ describe("POST /api/restart", function()
   end)
 end)
 
+describe("GET /api/keypairs", function()
+  before_each(function()
+    require("api.keypairs")._exec = function(cmd)
+      if cmd:match("uuid") then
+        return "11111111-1111-1111-1111-111111111111\n", 0
+      elseif cmd:match("reality%-keypair") then
+        return "PrivateKey: AAA\nPublicKey: BBB\n", 0
+      elseif cmd:match("wireguard%-keypair") then
+        return "PrivateKey: WGPRIV\nPublicKey: WGPUB\n", 0
+      elseif cmd:match("tls%-keypair") then
+        return "-----BEGIN PRIVATE KEY-----\nKEY\n-----END PRIVATE KEY-----\n" ..
+               "-----BEGIN CERTIFICATE-----\nCERT\n-----END CERTIFICATE-----\n", 0
+      end
+      return "", 1
+    end
+  end)
+
+  it("generates uuid", function()
+    local resp = sui.handle({ path="/api/keypairs", method="GET", body="", query={type="uuid"} })
+    local b = require("cjson").decode(resp.body)
+    assert.equal("11111111-1111-1111-1111-111111111111", b.obj.uuid)
+  end)
+
+  it("generates reality keypair", function()
+    local resp = sui.handle({ path="/api/keypairs", method="GET", body="", query={type="reality"} })
+    local b = require("cjson").decode(resp.body)
+    assert.equal("AAA", b.obj.private_key)
+    assert.equal("BBB", b.obj.public_key)
+  end)
+
+  it("generates wireguard keypair", function()
+    local resp = sui.handle({ path="/api/keypairs", method="GET", body="", query={type="wireguard"} })
+    local b = require("cjson").decode(resp.body)
+    assert.equal("WGPRIV", b.obj.private_key)
+  end)
+
+  it("generates tls keypair", function()
+    local resp = sui.handle({ path="/api/keypairs", method="GET", body="",
+                              query={ type="tls", server_name="example.com" } })
+    local b = require("cjson").decode(resp.body)
+    assert.matches("PRIVATE KEY", b.obj.private_key)
+    assert.matches("CERTIFICATE", b.obj.certificate)
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })

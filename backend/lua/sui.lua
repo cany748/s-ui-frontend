@@ -54,4 +54,7 @@ M.register("GET", "/api/logs", function(env) return logs_mod.handler(env, M.conf
 local restart_mod = require("api.restart")
 M.register("POST", "/api/restart", function(env) return restart_mod.handler(env, M.config) end)
 
+local keypairs_mod = require("api.keypairs")
+M.register("GET", "/api/keypairs", function(env) return keypairs_mod.handler(env, M.config) end)
+
 return M
