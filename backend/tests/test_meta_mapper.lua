@@ -188,3 +188,25 @@ describe("meta_mapper.load", function()
     assert.equal("my-cert", result.tls[1].name)
   end)
 end)
+
+describe("meta_mapper.load handles missing meta", function()
+  it("auto-generates tlsConfigs from config when meta is nil", function()
+    local config = helpers.load_fixture("trojan-tls.json")
+    local state = mapper.load(config, nil)
+    assert.equal(1, #state.tls)
+    assert.matches("auto%-", state.tls[1].name)
+  end)
+end)
+
+describe("meta_mapper.load handles dangling bindings", function()
+  it("ignores tls_configs that no inbound/outbound references", function()
+    local config = helpers.load_fixture("vmess-simple.json")
+    local meta = {
+      tlsConfigs = {
+        { id = 99, name = "ghost", tls = { enabled = true, server_name = "ghost.com" } }
+      }
+    }
+    local state = mapper.load(config, meta)
+    assert.equal(0, #state.tls)
+  end)
+end)
