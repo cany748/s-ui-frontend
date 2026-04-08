@@ -112,6 +112,48 @@ describe("POST /api/restart", function()
   end)
 end)
 
+describe("GET /api/backup", function()
+  it("returns tar.gz with config and meta", function()
+    local cp = os.tmpname(); local f = io.open(cp,"w"); f:write([[{"a":1}]]); f:close()
+    local mp = os.tmpname(); local g = io.open(mp,"w"); g:write([[{"b":2}]]); g:close()
+    sui.config = { singbox_config_path = cp, meta_path = mp }
+    local resp = sui.handle({ path="/api/backup", method="GET", body="" })
+    assert.equal(200, resp.status)
+    assert.equal("application/gzip", resp.headers["Content-Type"])
+    assert.is_string(resp.body)
+    assert.is_true(#resp.body > 0)
+    os.remove(cp); os.remove(mp)
+  end)
+end)
+
+describe("POST /api/restore", function()
+  it("extracts tar.gz and replaces config files", function()
+    -- build test tar.gz
+    local tmp_dir = os.tmpname() .. "-d"
+    os.execute("mkdir -p " .. tmp_dir)
+    local cf = io.open(tmp_dir .. "/config.json","w"); cf:write([[{"inbounds":[],"outbounds":[]}]]); cf:close()
+    local mf = io.open(tmp_dir .. "/sui-meta.json","w"); mf:write([[{"version":1}]]); mf:close()
+    local tar_path = os.tmpname() .. ".tar.gz"
+    os.execute("tar -czf " .. tar_path .. " -C " .. tmp_dir .. " .")
+    local tf = io.open(tar_path, "rb"); local body = tf:read("*a"); tf:close()
+
+    local cp = os.tmpname(); local ocf = io.open(cp,"w"); ocf:write("old"); ocf:close()
+    local mp = os.tmpname(); local omf = io.open(mp,"w"); omf:write("old"); omf:close()
+    sui.config = { singbox_config_path = cp, meta_path = mp }
+    require("config_io").singbox_cmd = "true --"
+
+    local resp = sui.handle({ path="/api/restore", method="POST", body=body })
+    local b = require("cjson").decode(resp.body)
+    local util = require("util")
+    assert.is_true(b.success, b.msg)
+    assert.matches("inbounds", util.read_file(cp))
+    assert.matches("version", util.read_file(mp))
+
+    os.execute("rm -rf " .. tmp_dir .. " " .. tar_path)
+    os.remove(cp); os.remove(mp)
+  end)
+end)
+
 describe("GET /api/checkOutbound", function()
   it("returns delay from clash api", function()
     require("api.check_outbound")._http_get = function(url)
