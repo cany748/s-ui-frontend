@@ -1,0 +1,16 @@
+{
+  "log": { "level": "info" },
+  "inbounds": [
+    {
+      "type": "vmess",
+      "tag": "vmess-in",
+      "listen": "::",
+      "listen_port": 10000,
+      "users": [
+        { "name": "alice", "uuid": "11111111-1111-1111-1111-111111111111", "alterId": 0 },
+        { "name": "bob",   "uuid": "22222222-2222-2222-2222-222222222222", "alterId": 0 }
+      ]
+    }
+  ],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}

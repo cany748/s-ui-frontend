@@ -1,0 +1,21 @@
+{
+  "log": { "level": "info" },
+  "inbounds": [
+    {
+      "type": "trojan",
+      "tag": "trojan-in",
+      "listen": "::",
+      "listen_port": 8443,
+      "users": [
+        { "name": "alice", "password": "trojan-pass-alice" }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "example.com",
+        "certificate_path": "/etc/ssl/cert.pem",
+        "key_path": "/etc/ssl/key.pem"
+      }
+    }
+  ],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}

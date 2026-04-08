@@ -1,0 +1,20 @@
+{
+  "log": { "level": "info" },
+  "endpoints": [
+    {
+      "type": "wireguard",
+      "tag": "wg-out",
+      "address": ["10.0.0.2/32"],
+      "private_key": "WG_PRIVATE",
+      "peers": [
+        {
+          "address": "1.2.3.4",
+          "port": 51820,
+          "public_key": "WG_PEER_PUB",
+          "allowed_ips": ["0.0.0.0/0"]
+        }
+      ]
+    }
+  ],
+  "outbounds": [{ "type": "direct", "tag": "direct" }]
+}

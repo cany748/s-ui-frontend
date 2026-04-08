@@ -1,0 +1,44 @@
+{
+  "log": { "level": "info" },
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless-in-1",
+      "listen_port": 443,
+      "users": [{ "name": "alice", "uuid": "11111111-1111-1111-1111-111111111111" }],
+      "tls": {
+        "enabled": true,
+        "server_name": "shared.example.com",
+        "certificate_path": "/etc/ssl/shared.pem",
+        "key_path": "/etc/ssl/shared.key"
+      }
+    },
+    {
+      "type": "trojan",
+      "tag": "trojan-in-2",
+      "listen_port": 8443,
+      "users": [{ "name": "alice", "password": "p1" }],
+      "tls": {
+        "enabled": true,
+        "server_name": "shared.example.com",
+        "certificate_path": "/etc/ssl/shared.pem",
+        "key_path": "/etc/ssl/shared.key"
+      }
+    }
+  ],
+  "outbounds": [
+    { "type": "direct", "tag": "direct" },
+    {
+      "type": "vless",
+      "tag": "vless-out",
+      "server": "remote.example.com",
+      "server_port": 443,
+      "uuid": "33333333-3333-3333-3333-333333333333",
+      "tls": {
+        "enabled": true,
+        "server_name": "remote.example.com",
+        "insecure": false
+      }
+    }
+  ]
+}
