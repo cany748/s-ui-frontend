@@ -92,6 +92,26 @@ describe("GET /api/logs", function()
   end)
 end)
 
+describe("POST /api/restart", function()
+  it("calls service restart and returns success", function()
+    require("api.restart")._exec = function(cmd)
+      assert.matches("/etc/init.d/sing%-box restart", cmd)
+      return "", 0
+    end
+    local resp = sui.handle({ path="/api/restart", method="POST", body="" })
+    local body = require("cjson").decode(resp.body)
+    assert.is_true(body.success)
+  end)
+
+  it("returns error if service restart fails", function()
+    require("api.restart")._exec = function(cmd) return "boom", 1 end
+    local resp = sui.handle({ path="/api/restart", method="POST", body="" })
+    local body = require("cjson").decode(resp.body)
+    assert.is_false(body.success)
+    assert.matches("boom", body.msg)
+  end)
+end)
+
 describe("sui.handle", function()
   it("returns 404 for unknown path", function()
     local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })

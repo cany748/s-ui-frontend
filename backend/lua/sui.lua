@@ -51,4 +51,7 @@ M.register("GET", "/api/status", function(env) return status_mod.handler(env, M.
 local logs_mod = require("api.logs")
 M.register("GET", "/api/logs", function(env) return logs_mod.handler(env, M.config) end)
 
+local restart_mod = require("api.restart")
+M.register("POST", "/api/restart", function(env) return restart_mod.handler(env, M.config) end)
+
 return M
