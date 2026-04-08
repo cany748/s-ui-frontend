@@ -1,0 +1,15 @@
+local sui = require("sui")
+
+describe("sui.handle", function()
+  it("returns 404 for unknown path", function()
+    local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
+    assert.equal(404, resp.status)
+  end)
+
+  it("returns Msg-shaped JSON envelope", function()
+    local resp = sui.handle({ path = "/api/nope", method = "GET", body = "" })
+    local body = require("cjson").decode(resp.body)
+    assert.is_false(body.success)
+    assert.is_string(body.msg)
+  end)
+end)

@@ -1,0 +1,40 @@
+local cjson = require("cjson")
+
+local M = {}
+
+M.routes = {}
+M.config = require("sui_config").load()
+
+function M.register(method, path_pattern, handler)
+  M.routes[method .. " " .. path_pattern] = handler
+end
+
+local function envelope(success, msg, obj, status)
+  return {
+    status = status or 200,
+    headers = { ["Content-Type"] = "application/json" },
+    body = cjson.encode({ success = success, msg = msg or "", obj = obj }),
+  }
+end
+
+M.envelope = envelope
+
+function M.handle(env)
+  if env.path and env.path:sub(1, 7) == "/clash/" then
+    local ok, proxy = pcall(require, "clash_proxy")
+    if ok then return proxy.handler(env, M.config) end
+  end
+
+  local key = env.method .. " " .. env.path
+  local handler = M.routes[key]
+  if not handler then
+    return envelope(false, "not found: " .. env.path, nil, 404)
+  end
+  local ok, result = pcall(handler, env)
+  if not ok then
+    return envelope(false, "internal error: " .. tostring(result), nil, 500)
+  end
+  return result
+end
+
+return M
