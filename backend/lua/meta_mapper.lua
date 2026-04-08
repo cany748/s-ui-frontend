@@ -147,4 +147,33 @@ function M.load(raw_config, existing_meta)
   }
 end
 
+local function build_tls_index(tls_configs)
+  local idx = {}
+  for _, tc in ipairs(tls_configs) do idx[tc.id] = tc.tls end
+  return idx
+end
+
+function M.inline_tls(inbounds, outbounds, tls_configs)
+  local idx = build_tls_index(tls_configs)
+  local in_copy = deep_copy(inbounds or {})
+  local out_copy = deep_copy(outbounds or {})
+
+  local function inline(arr, label)
+    for _, item in ipairs(arr) do
+      if item.tls_id ~= nil then
+        local block = idx[item.tls_id]
+        if block == nil then
+          error(label .. " '" .. tostring(item.tag) .. "' references unknown tls_id " .. tostring(item.tls_id))
+        end
+        item.tls = deep_copy(block)
+        item.tls_id = nil
+      end
+    end
+  end
+
+  inline(in_copy, "inbound")
+  inline(out_copy, "outbound")
+  return in_copy, out_copy
+end
+
 return M

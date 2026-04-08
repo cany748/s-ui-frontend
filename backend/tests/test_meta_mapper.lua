@@ -55,6 +55,37 @@ describe("meta_mapper.extract_clients", function()
   end)
 end)
 
+describe("meta_mapper.inline_tls", function()
+  it("inlines tls block by tls_id and removes tls_id", function()
+    local inbounds = {
+      { type = "trojan", tag = "in1", tls_id = 1, users = {} }
+    }
+    local outbounds = {
+      { type = "vless", tag = "out1", tls_id = 2 }
+    }
+    local tls_configs = {
+      { id = 1, name = "in-tls", tls = { enabled = true, server_name = "a.com" } },
+      { id = 2, name = "out-tls", tls = { enabled = true, server_name = "b.com" } },
+    }
+    local new_in, new_out = mapper.inline_tls(inbounds, outbounds, tls_configs)
+    assert.equal("a.com", new_in[1].tls.server_name)
+    assert.is_nil(new_in[1].tls_id)
+    assert.equal("b.com", new_out[1].tls.server_name)
+    assert.is_nil(new_out[1].tls_id)
+  end)
+
+  it("leaves elements without tls_id unchanged", function()
+    local inbounds = { { type = "vmess", tag = "in1", users = {} } }
+    local new_in = mapper.inline_tls(inbounds, {}, {})
+    assert.is_nil(new_in[1].tls)
+  end)
+
+  it("returns error for unknown tls_id", function()
+    local inbounds = { { type = "trojan", tag = "in1", tls_id = 99 } }
+    assert.has_error(function() mapper.inline_tls(inbounds, {}, {}) end)
+  end)
+end)
+
 describe("meta_mapper.load", function()
   it("composes extract_tls + extract_clients into store-shaped object", function()
     local config = helpers.load_fixture("vless-reality.json")
