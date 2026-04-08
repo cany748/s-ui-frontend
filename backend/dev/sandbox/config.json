@@ -1,0 +1,1 @@
+{"outbounds":[{"type":"direct","tag":"direct"}],"log":{"level":"info"},"inbounds":[{"type":"vmess","users":{},"tag":"smoke"}]}
