@@ -37,9 +37,10 @@
 
 <script lang="ts">
 import { computed, ref, watch } from "vue";
-import HttpUtils from "@/plugins/httputil";
+import { getConnections } from "@/plugins/clashApi";
 import { HumanReadable } from "@/plugins/utils";
 import { i18n } from "@/locales";
+import Data from "@/store/modules/data";
 
 export default {
   props: {
@@ -48,43 +49,33 @@ export default {
   emits: ["update:visible"],
   setup(props) {
     const loading = ref(false);
-    const info = ref<{
-      clients?: number;
-      inbounds?: number;
-      outbounds?: number;
-      services?: number;
-      endpoints?: number;
-      clientUp?: number;
-      clientDown?: number;
-    }>({});
+    const downloadTotal = ref(0);
+    const uploadTotal = ref(0);
+    const activeConns = ref(0);
 
-    const clientUp = computed(() => HumanReadable.sizeFormat(info.value.clientUp ?? 0));
-    const clientDown = computed(() => HumanReadable.sizeFormat(info.value.clientDown ?? 0));
-    const totalUsage = computed(() => {
-      const up = info.value.clientUp ?? 0;
-      const down = info.value.clientDown ?? 0;
-      return HumanReadable.sizeFormat(up + down);
-    });
+    const store = Data();
 
     const tableRows = computed(() => {
       const t = (key: string) => i18n.global.t(key);
       return [
-        { key: "clients", icon: "mdi-account-multiple", label: t("pages.clients"), value: info.value.clients ?? 0, color: undefined },
-        { key: "inbounds", icon: "mdi-cloud-download", label: t("pages.inbounds"), value: info.value.inbounds ?? 0, color: undefined },
-        { key: "outbounds", icon: "mdi-cloud-upload", label: t("pages.outbounds"), value: info.value.outbounds ?? 0, color: undefined },
-        { key: "services", icon: "mdi-server", label: t("pages.services"), value: info.value.services ?? 0, color: undefined },
-        { key: "endpoints", icon: "mdi-cloud-tags", label: t("pages.endpoints"), value: info.value.endpoints ?? 0, color: undefined },
-        { key: "clientUp", icon: "mdi-cloud-upload", label: t("stats.upload"), value: clientUp.value, color: "orange" },
-        { key: "clientDown", icon: "mdi-cloud-download", label: t("stats.download"), value: clientDown.value, color: "success" },
-        { key: "totalUsage", icon: "mdi-chart-box", label: t("main.stats.totalUsage"), value: totalUsage.value, color: "primary" },
+        { key: "clients", icon: "mdi-account-multiple", label: t("pages.clients"), value: store.clients.length, color: undefined },
+        { key: "inbounds", icon: "mdi-cloud-download", label: t("pages.inbounds"), value: store.inbounds.length, color: undefined },
+        { key: "outbounds", icon: "mdi-cloud-upload", label: t("pages.outbounds"), value: store.outbounds.length, color: undefined },
+        { key: "services", icon: "mdi-server", label: t("pages.services"), value: store.services.length, color: undefined },
+        { key: "endpoints", icon: "mdi-cloud-tags", label: t("pages.endpoints"), value: store.endpoints.length, color: undefined },
+        { key: "activeConns", icon: "mdi-connection", label: t("online"), value: activeConns.value, color: "primary" },
+        { key: "upload", icon: "mdi-cloud-upload", label: t("stats.upload"), value: HumanReadable.sizeFormat(uploadTotal.value), color: "orange" },
+        { key: "download", icon: "mdi-cloud-download", label: t("stats.download"), value: HumanReadable.sizeFormat(downloadTotal.value), color: "success" },
       ];
     });
 
     const refresh = async () => {
       loading.value = true;
-      const data = await HttpUtils.get("api/status", { r: "db" });
-      if (data.success && data.obj) {
-        info.value = data.obj.db ?? data.obj;
+      const snapshot = await getConnections();
+      if (snapshot) {
+        downloadTotal.value = snapshot.downloadTotal;
+        uploadTotal.value = snapshot.uploadTotal;
+        activeConns.value = snapshot.connections?.length ?? 0;
       }
       loading.value = false;
     };
@@ -98,10 +89,9 @@ export default {
 
     return {
       loading,
-      info,
-      clientUp,
-      clientDown,
-      totalUsage,
+      downloadTotal,
+      uploadTotal,
+      activeConns,
       tableRows,
       refresh,
     };

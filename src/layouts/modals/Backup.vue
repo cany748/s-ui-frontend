@@ -1,5 +1,5 @@
 <template>
-  <v-dialog transition="dialog-bottom-transition" width="90%" max-width="500">
+  <v-dialog transition="dialog-bottom-transition" width="90%" max-width="400">
     <v-card class="rounded-lg">
       <v-card-title>
         <v-row>
@@ -12,27 +12,14 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text>
-        <v-row>
-          <v-col cols="auto">
-            <v-checkbox v-model="exclude" :label="$t('main.backup.exclStats')" value="stats" hide-details></v-checkbox>
-          </v-col>
-          <v-col cols="auto">
-            <v-checkbox v-model="exclude" :label="$t('main.backup.exclChanges')" value="changes" hide-details></v-checkbox>
-          </v-col>
-        </v-row>
+
         <v-row>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" hide-details @click="backup()">{{ $t("main.backup.backup") }}</v-btn>
+            <v-btn color="primary" hide-details @click="backup">{{ $t("main.backup.backup") }}</v-btn>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="auto" align-self="center">
-            <v-btn color="primary" hide-details @click="restore()">{{ $t("main.backup.restore") }}</v-btn>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-divider></v-divider>
-          <v-col cols="auto" align-self="center">
-            <v-btn color="primary" hide-details @click="config()">{{ $t("main.backup.sbConfig") }}</v-btn>
+            <v-btn color="primary" hide-details :loading="restoring" @click="restore">{{ $t("main.backup.restore") }}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -47,49 +34,35 @@ export default {
   props: ["control", "visible"],
   data() {
     return {
-      exclude: ["stats", "changes"],
+      restoring: false,
     };
-  },
-  watch: {
-    visible(v) {
-      if (v) {
-        this.exclude = ["stats", "changes"];
-      }
-    },
   },
   methods: {
     backup() {
-      const excludeOption = this.exclude.length > 0 ? `?exclude=${this.exclude.join(",")}` : "";
-      window.location.href = `api/getdb${excludeOption}`;
-    },
-    config() {
-      window.location.href = "api/singbox-config";
+      window.location.href = "/cgi-bin/sui/api/backup";
     },
     restore() {
       const fileInput = document.createElement("input");
       fileInput.type = "file";
-      fileInput.accept = ".db";
+      fileInput.accept = ".tar.gz,.tgz";
 
       fileInput.addEventListener("change", async (event: Event) => {
         const inputElement = event.target as HTMLInputElement;
-        const dbFile = inputElement.files ? inputElement.files[0] : null;
+        const file = inputElement.files?.[0];
+        if (!file) return;
 
-        if (dbFile) {
-          const formData = new FormData();
-          formData.append("db", dbFile);
+        const formData = new FormData();
+        formData.append("backup", file);
 
-          this.control.visible = false;
+        this.restoring = true;
+        this.control.visible = false;
 
-          const uploadMsg = await HttpUtils.post("api/importdb", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+        const msg = await HttpUtils.post("api/restore", formData);
+        this.restoring = false;
 
-          if (uploadMsg.success) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            location.reload();
-          }
+        if (msg.success) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          location.reload();
         }
       });
 

@@ -5,7 +5,7 @@
     :expand-on-hover="!isMobile"
     :rail="!isMobile"
     :permanent="!isMobile"
-    @click="isMobile ? $emit('toggleDrawer') : null"
+    @click="isMobile ? emit('toggleDrawer') : null"
   >
     <v-list-item height="63" prepend-avatar="@/assets/logo.svg" title="S-UI">
       <template v-if="isMobile" #append>
@@ -23,22 +23,17 @@
         <v-list-item-title v-text="$t(item.title)"></v-list-item-title>
       </v-list-item>
     </v-list>
-    <template #append>
-      <v-list-item prepend-icon="mdi-logout" :title="$t('menu.logout')" @click="Logout"></v-list-item>
-    </template>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import router from "@/router";
-import { logout } from "@/plugins/httputil";
 
-const props = defineProps(["isMobile", "displayDrawer"]);
+const props = defineProps<{ isMobile: boolean; displayDrawer: boolean }>();
+const emit = defineEmits<{ toggleDrawer: [] }>();
 
-const showDrawer = computed((): boolean => {
-  return props.displayDrawer;
-});
+const showDrawer = computed((): boolean => props.displayDrawer);
 
 const menu = [
   { title: "pages.home", icon: "mdi-home", path: "/" },
@@ -51,11 +46,6 @@ const menu = [
   { title: "pages.basics", icon: "mdi-application-cog", path: "/basics" },
   { title: "pages.rules", icon: "mdi-routes", path: "/rules" },
   { title: "pages.dns", icon: "mdi-dns", path: "/dns" },
-  { title: "pages.admins", icon: "mdi-account-tie", path: "/admins" },
   { title: "pages.settings", icon: "mdi-cog", path: "/settings" },
 ];
-
-const Logout = async () => {
-  logout();
-};
 </script>

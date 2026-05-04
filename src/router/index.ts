@@ -1,18 +1,10 @@
-// Composables
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "@/views/Login.vue";
 import Data from "@/store/modules/data";
 
 const routes = [
   {
-    path: "/login",
-    name: "pages.login",
-    component: Login,
-  },
-  {
     path: "/",
     component: () => import("@/layouts/default/Default.vue"),
-    meta: { requiresAuth: true },
     children: [
       {
         path: "/",
@@ -65,11 +57,6 @@ const routes = [
         component: () => import("@/views/Dns.vue"),
       },
       {
-        path: "/admins",
-        name: "pages.admins",
-        component: () => import("@/views/Admins.vue"),
-      },
-      {
         path: "/settings",
         name: "pages.settings",
         component: () => import("@/views/Settings.vue"),
@@ -83,40 +70,12 @@ const router = createRouter({
   routes,
 });
 
-let intervalId: any;
+let intervalId: ReturnType<typeof setInterval> | undefined;
 
-// Navigation guard to check authentication state
-router.beforeEach((to) => {
-  // Check the session cookie
-  const sessionCookie = document.cookie.split(";").find((cookie) => cookie.trim().startsWith("s-ui="));
-  const isAuthenticated = !!sessionCookie;
-
-  // If the route requires authentication and the user is not authenticated, redirect to /login
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    return "/login";
-  }
-  if (to.path === "/login" && isAuthenticated) {
-    // If already authenticated and visiting /login, redirect to '/'
-    return "/";
-  }
-
-  // Load default data
-  if (to.path === "/login") {
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = undefined;
-    }
-  } else {
-    loadDataInterval();
-  }
-});
-
-const loadDataInterval = () => {
+router.afterEach(() => {
   if (intervalId) return;
   Data().loadData();
-  intervalId = setInterval(() => {
-    Data().loadData();
-  }, 10_000);
-};
+  intervalId = setInterval(() => Data().loadData(), 10_000);
+});
 
 export default router;

@@ -3,7 +3,7 @@ import axios from "axios";
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-axios.defaults.baseURL = "./";
+axios.defaults.baseURL = "/cgi-bin/sui/";
 const pendingRequests = new Map();
 
 axios.interceptors.request.use(
